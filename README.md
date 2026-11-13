@@ -35,11 +35,26 @@ Or from repo root (after CMS venv exists): `npm run cms:dev`.
 
 Storefront falls back to local `catalog.ts` when the API is unreachable.
 
+## Commerce (local)
+
+1. `npm run cms:dev` then `npm run cms:seed` (ingredients + admin customer)
+2. Storefront: `/login` → OTP to `09045957011` (code in CMS console / `debug_code`)
+3. User: cart → checkout (city + address) → order
+4. Admin: `/dashboard` — sales, profit vs cost, ingredient planning, order status
+
 ## Sitemap (web)
 
-`/` · `/subscriptions` · `/shop` · `/product/:slug` · `/cart` · `/checkout` · `/about` · `/faq` · `/contact` · `/magazine` · `/account` · `/dashboard` · legal & auth shells
+`/` · `/subscriptions` · `/shop` · `/product/:slug` · `/cart` · `/checkout` · `/about` · `/faq` · `/contact` · `/magazine` · `/account` · `/login` (OTP) · `/dashboard` (admin) · legal shells
 
 ## Data sources
 
 - `petfit/raw_data/*.json` — WP dump (reference / future import)
 - Curated menu prices — `apps/web/src/data/catalog.ts` + CMS `seed_catalog`
+
+## GitHub Pages
+
+Storefront deploys from `master` via `.github/workflows/deploy-pages.yml` to:
+
+https://alinikkhah2001.github.io/petfitfood/
+
+CMS/API is not hosted on Pages — the site uses the local catalog fallback when the API is unreachable.

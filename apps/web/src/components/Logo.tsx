@@ -1,3 +1,5 @@
+import { asset } from "../lib/asset";
+
 type LogoProps = {
   className?: string;
   /** Kept for API compat; PNG lockup ignores fill color. */
@@ -29,7 +31,7 @@ export default function Logo({
   const size = /\bh-/.test(className) ? "" : "h-10 w-auto md:h-12";
   return (
     <img
-      src="/brand/petfit-logo-catdog.png"
+      src={asset("brand/petfit-logo-catdog.png")}
       alt="PetFit"
       className={`${size} w-auto ${className}`.trim()}
       width={200}

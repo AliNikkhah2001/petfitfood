@@ -10,6 +10,8 @@ from catalog.models import (
     ProductPrice,
 )
 from catalog.seed_data import CONTENT_PAGES, MAGAZINE, PRODUCTS
+from commerce.models import Customer, Ingredient, RecipeLine
+from commerce.seed_data import DEFAULT_SHARE, INGREDIENTS, LABEL_TO_SLUG
 
 
 class Command(BaseCommand):
@@ -17,6 +19,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self._seed_products()
+        self._seed_ingredients_and_recipes()
+        self._seed_commerce_admin()
         root = Page.get_first_root_node()
         home = root.get_children().live().first()
         if home is None:
@@ -110,6 +114,77 @@ class Command(BaseCommand):
         if site and site.root_page_id != home.id:
             site.root_page = home
             site.save()
+
+    def _seed_ingredients_and_recipes(self):
+        for row in INGREDIENTS:
+            Ingredient.objects.update_or_create(
+                slug=row["slug"],
+                defaults={
+                    "name_fa": row["name_fa"],
+                    "cost_per_kg_toman": row["cost_per_kg_toman"],
+                    "stock_kg": row["stock_kg"],
+                },
+            )
+
+        RecipeLine.objects.all().delete()
+        for product in PRODUCTS:
+            labels = product["ingredients"]
+            protein_labels = [
+                lab
+                for lab in labels
+                if LABEL_TO_SLUG.get(lab)
+                in {"chicken-breast", "chicken-meat", "beef"}
+            ]
+            organ_labels = [
+                lab
+                for lab in labels
+                if LABEL_TO_SLUG.get(lab) in {"organs", "chicken-liver"}
+            ]
+            veg_labels = [
+                lab
+                for lab in labels
+                if LABEL_TO_SLUG.get(lab)
+                in {"carrot", "pumpkin", "zucchini", "potato", "chicken-stock", "bone-stock"}
+            ]
+
+            for lab in protein_labels:
+                slug = LABEL_TO_SLUG[lab]
+                RecipeLine.objects.create(
+                    product_external_id=product["external_id"],
+                    ingredient=Ingredient.objects.get(slug=slug),
+                    grams_per_kg=DEFAULT_SHARE["protein"] // max(1, len(protein_labels)),
+                )
+            for lab in organ_labels:
+                slug = LABEL_TO_SLUG[lab]
+                RecipeLine.objects.create(
+                    product_external_id=product["external_id"],
+                    ingredient=Ingredient.objects.get(slug=slug),
+                    grams_per_kg=DEFAULT_SHARE["organs"] // max(1, len(organ_labels)),
+                )
+            for lab in veg_labels:
+                slug = LABEL_TO_SLUG[lab]
+                RecipeLine.objects.create(
+                    product_external_id=product["external_id"],
+                    ingredient=Ingredient.objects.get(slug=slug),
+                    grams_per_kg=DEFAULT_SHARE["veg"],
+                )
+
+        self.stdout.write(
+            f"Ingredients: {Ingredient.objects.count()} · Recipes: {RecipeLine.objects.count()}"
+        )
+
+    def _seed_commerce_admin(self):
+        customer, _ = Customer.objects.update_or_create(
+            phone="09045957011",
+            defaults={
+                "name": "مدیر پت‌فیت",
+                "city": "تهران",
+                "address": "حشمتیه، پلاک ۱۰",
+                "postal_code": "1637673565",
+                "is_admin": True,
+            },
+        )
+        self.stdout.write(f"Commerce admin customer: {customer.phone} (OTP login)")
 
     def _ensure_admin(self):
         User = get_user_model()

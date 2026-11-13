@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { asset } from "../lib/asset";
 gsap.registerPlugin(ScrollTrigger);
 
 const FRAME_COUNT = 90;
@@ -9,10 +10,8 @@ const SOURCE_SIZE = 1200;
 const RISE = 313;
 
 /** Offline-first frame sequence (downloaded into public/frames/bowl). */
-const FRAME_BASE = "/frames/bowl";
-
 const frameUrl = (index: number) =>
-  `${FRAME_BASE}/${String(index + 1).padStart(5, "0")}.webp`;
+  asset(`frames/bowl/${String(index + 1).padStart(5, "0")}.webp`);
 
 
 
@@ -69,7 +68,7 @@ type IngredientPhoto = {
 /* Ingredient photography floats at separate depths around the product bowl. */
 const PHOTOS: IngredientPhoto[] = [
   {
-    src: "/brand/ingredients/carrots.jpg",
+    src: asset("/brand/ingredients/carrots.jpg"),
     caption: "هویج",
     x: "32%",
     y: "23%",
@@ -80,7 +79,7 @@ const PHOTOS: IngredientPhoto[] = [
     rate: 0.95,
   },
   {
-    src: "/brand/ingredients/chicken.jpg",
+    src: asset("/brand/ingredients/chicken.jpg"),
     caption: "مرغ تازه",
     x: "68%",
     y: "19%",
@@ -91,7 +90,7 @@ const PHOTOS: IngredientPhoto[] = [
     rate: 1.25,
   },
   {
-    src: "/brand/ingredients/pumpkin.jpg",
+    src: asset("/brand/ingredients/pumpkin.jpg"),
     caption: "کدو حلوایی",
     x: "30%",
     y: "82%",
@@ -102,7 +101,7 @@ const PHOTOS: IngredientPhoto[] = [
     rate: 0.7,
   },
   {
-    src: "/brand/ingredients/organs.jpg",
+    src: asset("/brand/ingredients/organs.jpg"),
     caption: "دل و جگر",
     x: "70%",
     y: "80%",

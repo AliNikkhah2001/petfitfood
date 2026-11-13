@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { asset } from "../lib/asset";
 
 export default function AboutPage() {
   return (
@@ -17,7 +18,7 @@ export default function AboutPage() {
 
         <div className="mt-10 overflow-hidden rounded-2xl border border-neutral-200">
           <img
-            src="/brand/petfit-catdog-friends.jpg"
+            src={asset("brand/petfit-catdog-friends.jpg")}
             alt="همراهان پت‌فیت"
             className="max-h-72 w-full object-cover"
           />

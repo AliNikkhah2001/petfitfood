@@ -1,22 +1,36 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { formatToman } from "../data/catalog";
 import { CONTACT } from "../data/contact";
 import { createOrder } from "../lib/api";
+import { useAuth } from "../lib/auth";
 import { useCart } from "../lib/cart";
 
 /** Phase A checkout shell — collects order details, no payment gateway. */
 export default function CheckoutPage() {
   const { lines, totalToman, clear } = useCart();
+  const { customer, token, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [note, setNote] = useState("");
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
-
   const [submitting, setSubmitting] = useState(false);
+  const [prefilled, setPrefilled] = useState(false);
+
+  useEffect(() => {
+    if (authLoading || prefilled || !customer) return;
+    setName(customer.name ?? "");
+    setPhone(customer.phone ?? "");
+    setCity(customer.city ?? "");
+    setAddress(customer.address ?? "");
+    setPostalCode(customer.postal_code ?? "");
+    setPrefilled(true);
+  }, [authLoading, customer, prefilled]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -24,8 +38,13 @@ export default function CheckoutPage() {
       setError("سبد خرید خالی است.");
       return;
     }
-    if (name.trim().length < 2 || phone.replace(/\D/g, "").length < 10 || address.trim().length < 8) {
-      setError("نام، موبایل و آدرس را کامل وارد کنید.");
+    if (
+      name.trim().length < 2 ||
+      phone.replace(/\D/g, "").length < 10 ||
+      address.trim().length < 8 ||
+      city.trim().length < 2
+    ) {
+      setError("نام، موبایل، شهر و آدرس را کامل وارد کنید.");
       return;
     }
     setError("");
@@ -35,6 +54,8 @@ export default function CheckoutPage() {
       customer_name: name.trim(),
       phone: phone.trim(),
       address: address.trim(),
+      city: city.trim(),
+      postal_code: postalCode.trim() || undefined,
       note: note.trim() || undefined,
       lines: lines.map((l) => ({
         product_id: l.productId,
@@ -51,8 +72,7 @@ export default function CheckoutPage() {
         clear();
       })
       .catch(() => {
-        setDone(true);
-        clear();
+        setError("ثبت سفارش ناموفق بود. دوباره تلاش کنید.");
       })
       .finally(() => {
         setSubmitting(false);
@@ -88,6 +108,16 @@ export default function CheckoutPage() {
         <p className="mt-2 text-sm text-neutral-600">
           مرحلهٔ اول — بدون درگاه پرداخت؛ جزئیات سفارش برای پیگیری ذخیره می‌شود.
         </p>
+
+        {!token && !authLoading ? (
+          <p className="mt-3 text-sm text-neutral-600">
+            با{" "}
+            <Link to="/login?next=/checkout" className="font-bold text-brand-orange-hot underline">
+              ورود
+            </Link>{" "}
+            می‌توانید آدرس را برای دفعات بعد ذخیره کنید.
+          </p>
+        ) : null}
 
         <div className="mt-6 rounded-2xl border border-neutral-200 bg-white p-5">
           <h2 className="text-sm font-extrabold text-brand-indigo">خلاصه سبد</h2>
@@ -136,12 +166,29 @@ export default function CheckoutPage() {
             />
           </label>
           <label className="block">
+            <span className="text-xs font-bold text-brand-indigo">شهر</span>
+            <input
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="mt-1 h-11 w-full rounded-xl border-2 border-brand-indigo/15 px-3 text-sm font-semibold outline-none focus:border-brand-orange-hot"
+            />
+          </label>
+          <label className="block">
             <span className="text-xs font-bold text-brand-indigo">آدرس تحویل</span>
             <textarea
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               rows={3}
               className="mt-1 w-full rounded-xl border-2 border-brand-indigo/15 px-3 py-2 text-sm font-semibold outline-none focus:border-brand-orange-hot"
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-bold text-brand-indigo">کد پستی (اختیاری)</span>
+            <input
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, "").slice(0, 10))}
+              dir="ltr"
+              className="mt-1 h-11 w-full rounded-xl border-2 border-brand-indigo/15 px-3 text-sm font-semibold outline-none focus:border-brand-orange-hot"
             />
           </label>
           <label className="block">

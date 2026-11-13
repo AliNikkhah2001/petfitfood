@@ -5,6 +5,8 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react";
+import { Link } from "react-router-dom";
+import { asset } from "../lib/asset";
 import { PLANET_PHOTO } from "../lib/assets";
 import {
   BEEF_PRODUCTS,
@@ -357,9 +359,9 @@ export function Planet() {
               <a href="#ingredients" className="a-button">
                 دیدن مواد اولیه
               </a>
-              <a href="/shop" className="a-button-outline">
+              <Link to="/shop" className="a-button-outline">
                 خرید از فروشگاه
-              </a>
+              </Link>
             </div>
           </Reveal>
         </div>
@@ -589,12 +591,12 @@ export function StoreCta() {
               <h2 className="mt-3 max-w-[500px] text-h-4xl leading-[1.35] text-neutral-800 md:text-h-5xl">
                 مستقیم با پت‌فیت در ارتباط باشید.
               </h2>
-              <a
-                href="/shop"
+              <Link
+                to="/shop"
                 className="mt-4 inline-flex rounded-full bg-brand-orange-hot px-5 py-2.5 text-sm font-extrabold text-white"
               >
                 خرید آنلاین از فروشگاه
-              </a>
+              </Link>
               <ul className="mt-4 space-y-2 text-sm font-semibold text-neutral-800 md:text-base">
                 <li>
                   موبایل:{" "}
@@ -691,7 +693,7 @@ export function StoreCta() {
 
             <div className="relative min-h-[300px] overflow-hidden bg-primary-300 lg:min-h-full">
               <img
-                src="/content/products/PetFit_01.jpg"
+                src={asset("content/products/PetFit_01.jpg")}
                 alt="محصولات واقعی پت‌فیت"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover"
@@ -704,9 +706,9 @@ export function StoreCta() {
                     غذای اورگانیک و بالانس‌شده
                   </p>
                 </div>
-                <a href="/shop" className="a-button px-4 py-2.5 text-xs">
+                <Link to="/shop" className="a-button px-4 py-2.5 text-xs">
                   خرید آنلاین
-                </a>
+                </Link>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { CONTACT, telHref } from "../data/contact";
 import Logo from "./Logo";
+import { asset } from "../lib/asset";
 
 const COLUMNS: {
   title: string;
@@ -73,7 +74,7 @@ export default function Footer() {
         <div className="pt-10">
           <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5">
             <img
-              src="/brand/petfit-catdog-friends.jpg"
+              src={asset("brand/petfit-catdog-friends.jpg")}
               alt=""
               className="h-[140px] w-full object-cover object-center sm:h-[180px] md:h-[220px]"
               draggable={false}

@@ -3,6 +3,8 @@
  * + packaging assets. Prices in تومان as published.
  */
 
+import { asset } from "../lib/asset";
+
 export type PricePoint = { grams: number; priceToman: number };
 
 export type Product = {
@@ -23,8 +25,8 @@ export function formatToman(amount: number): string {
   return `${new Intl.NumberFormat("fa-IR").format(amount)} تومان`;
 }
 
-const PKG = "/content/packaging";
-const BOWL = "/brand/bowls";
+const PKG = asset("content/packaging");
+const BOWL = asset("brand/bowls");
 
 /** Official chicken menu (Instagram photo_112) */
 export const CHICKEN_PRODUCTS: Product[] = [
@@ -138,26 +140,26 @@ export const BEEF_PRODUCTS: Product[] = [
 export const PRODUCTS: Product[] = [...CHICKEN_PRODUCTS, ...BEEF_PRODUCTS];
 
 export const INGREDIENT_SHOWCASE = [
-  { name: "مرغ تازه", copy: "فیله و سینه در وعده‌های مرغ.", image: "/brand/ingredients/chicken.jpg" },
-  { name: "گوشت گوساله", copy: "پایهٔ خانوادهٔ Beef.", image: "/brand/bowls/beef.jpg" },
-  { name: "بوقلمون", copy: "وعدهٔ کم‌چرب با هضم آسان.", image: "/brand/ingredients/turkey.jpg" },
-  { name: "دل و جگر مرغ", copy: "احشاء مغذی مشترک همهٔ فرمولاسیون‌ها.", image: "/brand/ingredients/organs.jpg" },
-  { name: "هویج", copy: "سبزیجات پایهٔ منوی پت‌فیت.", image: "/brand/ingredients/carrots.jpg" },
-  { name: "کدو حلوایی", copy: "فیبر و طعم ملایم.", image: "/brand/ingredients/pumpkin.jpg" },
-  { name: "کدو سبز", copy: "بخشی از ترکیب مشترک سبزیجات.", image: "/brand/ingredients/zucchini.jpg" },
-  { name: "سیب‌زمینی", copy: "کربوهیدرات طبیعی در هر وعده.", image: "/brand/ingredients/potato.jpg" },
+  { name: "مرغ تازه", copy: "فیله و سینه در وعده‌های مرغ.", image: asset("/brand/ingredients/chicken.jpg") },
+  { name: "گوشت گوساله", copy: "پایهٔ خانوادهٔ Beef.", image: asset("/brand/bowls/beef.jpg") },
+  { name: "بوقلمون", copy: "وعدهٔ کم‌چرب با هضم آسان.", image: asset("/brand/ingredients/turkey.jpg") },
+  { name: "دل و جگر مرغ", copy: "احشاء مغذی مشترک همهٔ فرمولاسیون‌ها.", image: asset("/brand/ingredients/organs.jpg") },
+  { name: "هویج", copy: "سبزیجات پایهٔ منوی پت‌فیت.", image: asset("/brand/ingredients/carrots.jpg") },
+  { name: "کدو حلوایی", copy: "فیبر و طعم ملایم.", image: asset("/brand/ingredients/pumpkin.jpg") },
+  { name: "کدو سبز", copy: "بخشی از ترکیب مشترک سبزیجات.", image: asset("/brand/ingredients/zucchini.jpg") },
+  { name: "سیب‌زمینی", copy: "کربوهیدرات طبیعی در هر وعده.", image: asset("/brand/ingredients/potato.jpg") },
 ] as const;
 
 export const INSTAGRAM_REELS = [
-  { id: "10", title: "آماده‌سازی در آشپزخانه", poster: "/content/gallery/reel-10.jpg", src: "/content/gallery/reel-10.mp4" },
-  { id: "12_1", title: "پشت صحنهٔ تولید", poster: "/content/gallery/reel-12_1.jpg", src: "/content/gallery/reel-12_1.mp4" },
-  { id: "13", title: "مواد اولیه تازه", poster: "/content/gallery/reel-13.jpg", src: "/content/gallery/reel-13.mp4" },
-  { id: "15", title: "بسته‌بندی Fresh Pack", poster: "/content/gallery/reel-15.jpg", src: "/content/gallery/reel-15.mp4" },
-  { id: "18", title: "وعدهٔ روزانه", poster: "/content/gallery/reel-18.jpg", src: "/content/gallery/reel-18.mp4" },
-  { id: "21f", title: "نکتهٔ تغذیه", poster: "/content/gallery/reel-21f.jpg", src: "/content/gallery/reel-21f.mp4" },
-  { id: "22", title: "ریلز پت‌فیت", poster: "/content/gallery/reel-22.jpg", src: "/content/gallery/reel-22.mp4" },
-  { id: "24", title: "۶ مدل غذا برای پت‌ها", poster: "/content/gallery/reel-24.jpg", src: "/content/gallery/reel-24.mp4" },
-  { id: "27", title: "با @petfit.food", poster: "/content/gallery/reel-27.jpg", src: "/content/gallery/reel-27.mp4" },
+  { id: "10", title: "آماده‌سازی در آشپزخانه", poster: asset("/content/gallery/reel-10.jpg"), src: asset("/content/gallery/reel-10.mp4") },
+  { id: "12_1", title: "پشت صحنهٔ تولید", poster: asset("/content/gallery/reel-12_1.jpg"), src: asset("/content/gallery/reel-12_1.mp4") },
+  { id: "13", title: "مواد اولیه تازه", poster: asset("/content/gallery/reel-13.jpg"), src: asset("/content/gallery/reel-13.mp4") },
+  { id: "15", title: "بسته‌بندی Fresh Pack", poster: asset("/content/gallery/reel-15.jpg"), src: asset("/content/gallery/reel-15.mp4") },
+  { id: "18", title: "وعدهٔ روزانه", poster: asset("/content/gallery/reel-18.jpg"), src: asset("/content/gallery/reel-18.mp4") },
+  { id: "21f", title: "نکتهٔ تغذیه", poster: asset("/content/gallery/reel-21f.jpg"), src: asset("/content/gallery/reel-21f.mp4") },
+  { id: "22", title: "ریلز پت‌فیت", poster: asset("/content/gallery/reel-22.jpg"), src: asset("/content/gallery/reel-22.mp4") },
+  { id: "24", title: "۶ مدل غذا برای پت‌ها", poster: asset("/content/gallery/reel-24.jpg"), src: asset("/content/gallery/reel-24.mp4") },
+  { id: "27", title: "با @petfit.food", poster: asset("/content/gallery/reel-27.jpg"), src: asset("/content/gallery/reel-27.mp4") },
 ] as const;
 
-export const PACKSHOT = "/content/gallery/packshot-products.jpg";
+export const PACKSHOT = asset("content/gallery/packshot-products.jpg");

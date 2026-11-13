@@ -26,11 +26,22 @@ python manage.py runserver 127.0.0.1:8000
 | GET | `/api/v1/products/:slug/` | Single SKU |
 | GET | `/api/v1/pages/` | Live `ContentPage`s |
 | GET | `/api/v1/posts/` | Magazine articles |
-| GET/POST | `/api/v1/orders/` | Merchant list + Phase A order create |
+| POST | `/api/v1/auth/otp/request/` | `{phone}` → OTP (DEBUG returns `debug_code`) |
+| POST | `/api/v1/auth/otp/verify/` | `{phone,code,name?}` → `{token,customer}` |
+| GET/PATCH | `/api/v1/auth/me/` | Bearer profile + location |
+| GET/POST | `/api/v1/orders/` | Auth: mine / admin: all; create with city+address |
+| PATCH | `/api/v1/orders/:id/` | Admin status update |
+| GET | `/api/v1/admin/stats/` | Revenue, cost, profit, ingredient plan |
 
-Order totals are recomputed server-side from catalog prices when the SKU exists.
+Order totals and ingredient **cost_toman** are computed server-side (never trust client prices).
+
+## Auth notes
+
+- Seeded admin customer phone: `09045957011` (`is_admin=True`) — login via OTP on `/login`, then open `/dashboard`.
+- OTP is printed to the CMS console; in `DEBUG` the request response also includes `debug_code` for local QA.
+- Wagtail CMS admin remains at `/admin/` (`admin` / `petfit-admin`).
 
 ## Admin
 
-Wagtail snippets group **پت‌فیت فروش**: محصولات · سفارش‌ها.  
-Pages: content + magazine under the home tree.
+Wagtail snippets group **پت‌فیت فروش**: محصولات · سفارش‌ها · مشتریان · مواد اولیه.  
+React admin dashboard: storefront `/dashboard` (OTP admin only).

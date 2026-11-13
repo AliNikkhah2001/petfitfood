@@ -1,3 +1,5 @@
+import { asset } from "../lib/asset";
+
 /**
  * Ultra-wide fused CatDog mascot (transparent PNG) for the personalize overlay.
  */
@@ -8,7 +10,7 @@ export default function CatDogDuo({ className = "" }: { className?: string }) {
       aria-hidden="true"
     >
       <img
-        src="/brand/petfit-catdog-wide.png?v=ultrawide"
+        src={`${asset("brand/petfit-catdog-wide.png")}?v=ultrawide`}
         alt=""
         className="catdog-mascot-img block w-full max-w-none"
         draggable={false}

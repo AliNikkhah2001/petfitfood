@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { PRODUCTS as CATALOG, formatToman } from "../data/catalog";
+import { useAuth } from "../lib/auth";
 import { useCart } from "../lib/cart";
 import Logo from "./Logo";
 import PersonalizeOverlay, { PERSONALIZE_STORAGE_KEY } from "./PersonalizeOverlay";
@@ -29,6 +30,11 @@ const PRODUCTS = CATALOG.slice(0, 4).map((p) => ({
 export default function Header() {
   const location = useLocation();
   const { itemCount, totalToman } = useCart();
+  const { customer, token } = useAuth();
+  const accountLabel =
+    token && customer
+      ? customer.name?.trim() || customer.phone
+      : "حساب";
   const [scrolled, setScrolled] = useState(false);
   const [atBottom, setAtBottom] = useState(false);
   const [promo, setPromo] = useState(true);
@@ -229,7 +235,7 @@ export default function Header() {
                 aria-label="حساب کاربری"
                 className="hidden h-9 items-center rounded-full px-3 text-[12px] font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 sm:inline-flex"
               >
-                حساب
+                <span className="max-w-[7rem] truncate">{accountLabel}</span>
               </Link>
               <Link
                 to="/cart"
@@ -368,7 +374,7 @@ export default function Header() {
               شروع اشتراک
             </Link>
             <Link to="/account" onClick={closeAll} className="mt-3 text-center text-sm font-semibold text-brand-indigo">
-              حساب من
+              {token && customer ? accountLabel : "حساب من"}
             </Link>
           </nav>
         </div>

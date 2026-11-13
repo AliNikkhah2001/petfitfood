@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { HERO_POSTER } from "../lib/assets";
 
 export default function Hero() {
@@ -37,15 +38,15 @@ export default function Hero() {
             بسته‌های اشتراکی بالانس‌شده از پروتئین واقعی — دم در، بدون دردسر خرید تک‌وعده‌ای.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3 md:mt-7">
-            <a
-              href="/shop"
+            <Link
+              to="/shop"
               className="inline-flex items-center justify-center rounded-full bg-brand-orange-hot px-6 py-[13.5px] text-p-sm font-semibold text-white transition-colors hover:bg-primary-600"
             >
               خرید آنلاین
-            </a>
-            <a href="/shop" className="a-button px-6 py-[13.5px]">
+            </Link>
+            <Link to="/shop" className="a-button px-6 py-[13.5px]">
               فروشگاه
-            </a>
+            </Link>
             <a
               href="#how-its-made"
               className="inline-flex items-center gap-2 text-p-sm font-semibold text-white/90 underline decoration-white/40 underline-offset-4 transition-colors hover:text-white"

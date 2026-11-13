@@ -1,12 +1,14 @@
 /** Product-bowl carousel — locked camera frames, protein-edited food colors. */
 
+import { asset } from "./asset";
+
 export const LOCAL_BOWL_FRAMES = 90;
 
 export const localBowlFrame = (index: number) =>
-  `/frames/bowl/${String(index + 1).padStart(5, "0")}.webp`;
+  asset(`frames/bowl/${String(index + 1).padStart(5, "0")}.webp`);
 
 export const productBowlFrame = (protein: string, index: number) =>
-  `/frames/bowl-${protein}/${String(index + 1).padStart(5, "0")}.webp`;
+  asset(`frames/bowl-${protein}/${String(index + 1).padStart(5, "0")}.webp`);
 
 export type ProductIngredient = {
   src: string;
@@ -40,7 +42,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
     blurb: "فیله و سینهٔ مرغ تازه + سبزیجات مشترک",
     ingredients: [
       {
-        src: "/brand/ingredients/chicken.jpg",
+        src: asset("/brand/ingredients/chicken.jpg"),
         caption: "مرغ تازه",
         x: "68%",
         y: "19%",
@@ -51,7 +53,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 1.2,
       },
       {
-        src: "/brand/ingredients/carrots.jpg",
+        src: asset("/brand/ingredients/carrots.jpg"),
         caption: "هویج",
         x: "32%",
         y: "23%",
@@ -62,7 +64,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 0.95,
       },
       {
-        src: "/brand/ingredients/pumpkin.jpg",
+        src: asset("/brand/ingredients/pumpkin.jpg"),
         caption: "کدو",
         x: "30%",
         y: "78%",
@@ -73,7 +75,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 0.7,
       },
       {
-        src: "/brand/ingredients/organs.jpg",
+        src: asset("/brand/ingredients/organs.jpg"),
         caption: "دل و جگر",
         x: "70%",
         y: "76%",
@@ -93,7 +95,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
     blurb: "گوشت گوساله + سبزیجات مشترک",
     ingredients: [
       {
-        src: "/brand/ingredients/beef.jpg",
+        src: asset("/brand/ingredients/beef.jpg"),
         caption: "گوشت گوساله",
         x: "68%",
         y: "19%",
@@ -104,7 +106,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 1.2,
       },
       {
-        src: "/brand/ingredients/zucchini.jpg",
+        src: asset("/brand/ingredients/zucchini.jpg"),
         caption: "کدو سبز",
         x: "32%",
         y: "23%",
@@ -115,7 +117,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 0.95,
       },
       {
-        src: "/brand/ingredients/potato.jpg",
+        src: asset("/brand/ingredients/potato.jpg"),
         caption: "سیب‌زمینی",
         x: "30%",
         y: "78%",
@@ -126,7 +128,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 0.7,
       },
       {
-        src: "/brand/ingredients/organs.jpg",
+        src: asset("/brand/ingredients/organs.jpg"),
         caption: "دل و جگر",
         x: "70%",
         y: "76%",
@@ -146,7 +148,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
     blurb: "بوقلمون کم‌چرب + سبزیجات مشترک",
     ingredients: [
       {
-        src: "/brand/ingredients/turkey.jpg",
+        src: asset("/brand/ingredients/turkey.jpg"),
         caption: "بوقلمون",
         x: "68%",
         y: "19%",
@@ -157,7 +159,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 1.2,
       },
       {
-        src: "/brand/ingredients/carrots.jpg",
+        src: asset("/brand/ingredients/carrots.jpg"),
         caption: "هویج",
         x: "32%",
         y: "23%",
@@ -168,7 +170,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 0.95,
       },
       {
-        src: "/brand/ingredients/pumpkin.jpg",
+        src: asset("/brand/ingredients/pumpkin.jpg"),
         caption: "کدو",
         x: "30%",
         y: "78%",
@@ -179,7 +181,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 0.7,
       },
       {
-        src: "/brand/ingredients/zucchini.jpg",
+        src: asset("/brand/ingredients/zucchini.jpg"),
         caption: "کدو سبز",
         x: "70%",
         y: "76%",
@@ -199,7 +201,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
     blurb: "ماهی تازه + سبزیجات مشترک",
     ingredients: [
       {
-        src: "/brand/ingredients/fish.jpg",
+        src: asset("/brand/ingredients/fish.jpg"),
         caption: "ماهی",
         x: "68%",
         y: "19%",
@@ -210,7 +212,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 1.2,
       },
       {
-        src: "/brand/ingredients/carrots.jpg",
+        src: asset("/brand/ingredients/carrots.jpg"),
         caption: "هویج",
         x: "32%",
         y: "23%",
@@ -221,7 +223,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 0.95,
       },
       {
-        src: "/brand/ingredients/potato.jpg",
+        src: asset("/brand/ingredients/potato.jpg"),
         caption: "سیب‌زمینی",
         x: "30%",
         y: "78%",
@@ -232,7 +234,7 @@ export const PRODUCT_BOWL_SHOWS: ProductBowlShow[] = [
         rate: 0.7,
       },
       {
-        src: "/brand/ingredients/pumpkin.jpg",
+        src: asset("/brand/ingredients/pumpkin.jpg"),
         caption: "کدو",
         x: "70%",
         y: "76%",

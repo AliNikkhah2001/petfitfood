@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import { routerBasename } from "./lib/asset";
+import { AuthProvider } from "./lib/auth";
 import { CartProvider } from "./lib/cart";
 import AboutPage from "./pages/AboutPage";
 import AccountPage from "./pages/AccountPage";
@@ -24,7 +26,8 @@ import TermsPage from "./pages/TermsPage";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={routerBasename()}>
+      <AuthProvider>
       <CartProvider>
         <div id="top" dir="rtl" lang="fa-IR" className="petfit-site min-h-screen bg-white">
           <a
@@ -63,6 +66,7 @@ export default function App() {
           <Footer />
         </div>
       </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
