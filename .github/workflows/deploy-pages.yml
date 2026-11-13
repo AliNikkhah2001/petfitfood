@@ -27,6 +27,8 @@ jobs:
       - name: Build storefront for GitHub Pages
         env:
           VITE_BASE: /petfitfood/
+          # Absolute router/asset root (singlefile rewrites BASE_URL to ./)
+          VITE_ROUTER_BASE: /petfitfood
         run: npm run build
       - name: SPA fallback for project Pages
         run: cp apps/web/dist/index.html apps/web/dist/404.html

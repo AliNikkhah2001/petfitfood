@@ -11,8 +11,8 @@ function apiBase(): string {
     if (trimmed === "") return "";
     return trimmed;
   }
-  // Static hosting without a CMS — use catalog fallback only.
-  if (import.meta.env.BASE_URL !== "/") return "";
+  // Static hosting (GitHub Pages) — catalog fallback only.
+  if (import.meta.env.VITE_ROUTER_BASE || import.meta.env.BASE_URL !== "/") return "";
   return DEFAULT_BASE;
 }
 
