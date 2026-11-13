@@ -10,9 +10,6 @@ const IMAGE_SIZE = 1000;
 const SOURCE_SIZE = 1200;
 const RISE = 313;
 const SHOWS = PRODUCT_BOWL_SHOWS;
-const SEGMENT = 1 / SHOWS.length;
-/** Soft crossfade when protein pack changes (same camera pose). */
-const CROSSFADE_MS = 280;
 
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(max, Math.max(min, value));
@@ -23,10 +20,8 @@ type Pack = {
 };
 
 /**
- * Locked centered vessel (like BowlScroll).
- * One continuous 0→89 camera scrub for the whole section.
- * Protein packs swap at the *same* frame index with a short crossfade —
- * never reset to frame 0 (that looked like “another bowl”).
+ * Same camera scrub as BowlScroll: vessel stays centered, frames 0→89 once.
+ * Protein packs swap at the *current* frame (no L→R restart, no 89→0 jump).
  */
 export default function PetFitOrbitBowls() {
   const rootRef = useRef<HTMLElement | null>(null);
@@ -34,8 +29,7 @@ export default function PetFitOrbitBowls() {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const bowlRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
-  const canvasARef = useRef<HTMLCanvasElement | null>(null);
-  const canvasBRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const chipsRef = useRef<HTMLDivElement | null>(null);
   const labelRef = useRef<HTMLParagraphElement | null>(null);
   const blurbRef = useRef<HTMLParagraphElement | null>(null);
@@ -43,13 +37,19 @@ export default function PetFitOrbitBowls() {
   const activeKeyRef = useRef(SHOWS[0].frameKey);
   const showIdRef = useRef(SHOWS[0].id);
   const drawnRef = useRef(-1);
-  const frontIsARef = useRef(true);
-  const fadingRef = useRef(false);
   const [active, setActive] = useState(0);
   const [firstReady, setFirstReady] = useState(false);
 
-  const resolveImage = (frameKey: string, index: number) => {
-    const images = packsRef.current[frameKey]?.images ?? [];
+  const currentImages = () =>
+    packsRef.current[activeKeyRef.current]?.images ?? [];
+
+  const drawFrame = (index: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const images = currentImages();
     let frame = clamp(Math.round(index), 0, FRAME_COUNT - 1);
     let image = images[frame];
     for (let attempt = 0; attempt < FRAME_COUNT; attempt += 1) {
@@ -57,21 +57,9 @@ export default function PetFitOrbitBowls() {
       frame = frame > 0 ? frame - 1 : Math.min(index + attempt + 1, FRAME_COUNT - 1);
       image = images[frame];
     }
-    if (!image?.complete || image.naturalWidth === 0) return { frame: -1, image: null };
-    return { frame, image };
-  };
+    if (!image?.complete || image.naturalWidth === 0) return;
 
-  const paintOnto = (
-    canvas: HTMLCanvasElement | null,
-    frameKey: string,
-    index: number,
-  ) => {
-    if (!canvas) return -1;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return -1;
-    const { frame, image } = resolveImage(frameKey, index);
-    if (frame < 0 || !image) return -1;
-
+    // Match BowlScroll rise math exactly (avoids vessel/image displacement).
     const mobile = window.matchMedia("(max-width: 767px)").matches;
     const rise = -((RISE / SOURCE_SIZE) * 100) * (frame / FRAME_COUNT);
     const y = (IMAGE_SIZE * ((RISE / SOURCE_SIZE) * 100 + rise)) / 100;
@@ -102,15 +90,7 @@ export default function PetFitOrbitBowls() {
         IMAGE_SIZE,
       );
     }
-    return frame;
-  };
-
-  const frontCanvas = () => (frontIsARef.current ? canvasARef.current : canvasBRef.current);
-  const backCanvas = () => (frontIsARef.current ? canvasBRef.current : canvasARef.current);
-
-  const drawFrame = (index: number) => {
-    const painted = paintOnto(frontCanvas(), activeKeyRef.current, index);
-    if (painted >= 0) drawnRef.current = painted;
+    drawnRef.current = frame;
   };
 
   const loadPack = (frameKey: string, onFirst?: () => void) => {
@@ -147,7 +127,7 @@ export default function PetFitOrbitBowls() {
             onFirst?.();
           }
           if (loadedCount >= FRAME_COUNT) pack.ready = true;
-          if (activeKeyRef.current === frameKey && !fadingRef.current) {
+          if (activeKeyRef.current === frameKey) {
             drawFrame(drawnRef.current < 0 ? 0 : drawnRef.current);
           }
           kick();
@@ -164,8 +144,11 @@ export default function PetFitOrbitBowls() {
     return pack;
   };
 
-  const paintChipsAndCopy = (index: number) => {
+  const paintShow = (index: number) => {
     const show = SHOWS[index];
+    showIdRef.current = show.id;
+    activeKeyRef.current = show.frameKey;
+    loadPack(show.frameKey);
     if (labelRef.current) {
       labelRef.current.textContent = show.label;
       labelRef.current.style.color = show.accent;
@@ -197,46 +180,6 @@ export default function PetFitOrbitBowls() {
     });
   };
 
-  const crossfadeToProtein = (showIndex: number, frameIndex: number) => {
-    const show = SHOWS[showIndex];
-    showIdRef.current = show.id;
-    activeKeyRef.current = show.frameKey;
-    loadPack(show.frameKey);
-    paintChipsAndCopy(showIndex);
-    setActive(showIndex);
-
-    const front = frontCanvas();
-    const back = backCanvas();
-    if (!front || !back) {
-      drawFrame(frameIndex);
-      return;
-    }
-
-    // Paint next protein at the SAME camera frame, then fade.
-    paintOnto(back, show.frameKey, frameIndex);
-    fadingRef.current = true;
-    gsap.killTweensOf([front, back]);
-    gsap.set(back, { opacity: 0, zIndex: 2 });
-    gsap.set(front, { opacity: 1, zIndex: 1 });
-    gsap.to(back, {
-      opacity: 1,
-      duration: CROSSFADE_MS / 1000,
-      ease: "power1.out",
-    });
-    gsap.to(front, {
-      opacity: 0,
-      duration: CROSSFADE_MS / 1000,
-      ease: "power1.out",
-      onComplete: () => {
-        frontIsARef.current = !frontIsARef.current;
-        fadingRef.current = false;
-        gsap.set(frontCanvas(), { opacity: 1, zIndex: 2 });
-        gsap.set(backCanvas(), { opacity: 0, zIndex: 1 });
-        drawFrame(frameIndex);
-      },
-    });
-  };
-
   useEffect(() => {
     loadPack(SHOWS[0].frameKey, () => setFirstReady(true));
     SHOWS.slice(1).forEach((show) => loadPack(show.frameKey));
@@ -250,34 +193,28 @@ export default function PetFitOrbitBowls() {
     if (!area || !bowl || !frame || !chipsRoot || !firstReady) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    paintChipsAndCopy(0);
-    activeKeyRef.current = SHOWS[0].frameKey;
-    showIdRef.current = SHOWS[0].id;
+    paintShow(0);
 
     if (reduce) {
       drawFrame(FRAME_COUNT - 1);
-      gsap.set(bowl, { clearProps: "transform", opacity: 1 });
+      gsap.set(bowl, { scale: 1, rotateX: 0, y: 0, opacity: 1 });
       chipsRoot.querySelectorAll<HTMLElement>("[data-product-chip]").forEach((n) => {
         n.dataset.visible = "true";
       });
       return;
     }
 
+    const counter = { frame: 0 };
+
     const ctx = gsap.context(() => {
       gsap.set(bowl, {
-        x: 0,
-        y: 0,
-        xPercent: 0,
-        yPercent: 0,
-        scale: 1,
-        rotateX: 0,
+        scale: 0.9,
+        rotateX: 11,
+        y: 44,
         opacity: 1,
-        transformOrigin: "50% 50%",
-        force3D: true,
+        xPercent: 0,
         transformPerspective: 1400,
       });
-      gsap.set(canvasARef.current, { opacity: 1, zIndex: 2 });
-      gsap.set(canvasBRef.current, { opacity: 0, zIndex: 1 });
 
       const tiltX = gsap.quickTo(frame, "rotationX", {
         duration: 0.4,
@@ -299,8 +236,8 @@ export default function PetFitOrbitBowls() {
         const offsetY = (py - 0.5) * rect.height;
         const normX = rubberband(offsetX, rect.width / 2) / (rect.width / 2);
         const normY = rubberband(offsetY, rect.height / 2) / (rect.height / 2);
-        tiltY(normX * 6);
-        tiltX(-normY * 5);
+        tiltY(normX * 8);
+        tiltX(-normY * 6.5);
       };
       const onPointerLeave = () => {
         tiltX(0);
@@ -309,60 +246,72 @@ export default function PetFitOrbitBowls() {
       stageRef.current?.addEventListener("pointermove", onPointerMove);
       stageRef.current?.addEventListener("pointerleave", onPointerLeave);
 
-      const applyProgress = (p: number) => {
-        // ONE continuous camera scrub for the whole section (never reset to 0).
-        const frameIndex = p * (FRAME_COUNT - 1);
-        const proteinIndex = Math.min(
-          SHOWS.length - 1,
-          Math.floor(p / SEGMENT + 1e-9),
-        );
-
-        if (showIdRef.current !== SHOWS[proteinIndex].id) {
-          crossfadeToProtein(proteinIndex, frameIndex);
-        } else if (!fadingRef.current) {
-          drawFrame(frameIndex);
-        } else {
-          // Keep both layers in sync during fade
-          paintOnto(frontCanvas(), activeKeyRef.current, frameIndex);
-          paintOnto(
-            backCanvas(),
-            SHOWS[proteinIndex].frameKey,
-            frameIndex,
-          );
-        }
-
-        const current = Math.round(frameIndex);
-        drawnRef.current = current;
-        chipsRoot.querySelectorAll<HTMLElement>("[data-product-chip]").forEach((node) => {
-          if (node.style.visibility === "hidden") return;
-          const from = Number(node.dataset.from ?? "20");
-          const rate = Number(node.dataset.rate ?? "1");
-          const z = Number(node.dataset.z ?? "100");
-          node.dataset.visible = String(current >= from);
+      // One continuous 0→89 scrub — never restarts at protein boundaries.
+      gsap.to(counter, {
+        frame: FRAME_COUNT - 1,
+        ease: "none",
+        onUpdate: () => {
+          drawFrame(counter.frame);
+          const current = Math.round(counter.frame);
           const travel = current / (FRAME_COUNT - 1);
-          const depthCue = (z / 148) * rate;
-          node.style.setProperty(
-            "--drift",
-            `${((0.5 - travel) * 12 * depthCue).toFixed(2)}px`,
-          );
-          node.style.setProperty(
-            "--drift-x",
-            `${((0.5 - travel) * 8 * depthCue).toFixed(2)}px`,
-          );
-        });
-      };
-
-      ScrollTrigger.create({
-        trigger: area,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.45,
-        invalidateOnRefresh: true,
-        onRefresh: (self) => applyProgress(self.progress),
-        onUpdate: (self) => applyProgress(self.progress),
+          chipsRoot.querySelectorAll<HTMLElement>("[data-product-chip]").forEach((node) => {
+            if (node.style.visibility === "hidden") return;
+            const from = Number(node.dataset.from ?? "20");
+            const rate = Number(node.dataset.rate ?? "1");
+            const z = Number(node.dataset.z ?? "100");
+            node.dataset.visible = String(current >= from);
+            const depthCue = (z / 148) * rate;
+            node.style.setProperty(
+              "--drift",
+              `${((0.5 - travel) * 28 * depthCue).toFixed(2)}px`,
+            );
+            node.style.setProperty(
+              "--drift-x",
+              `${((0.5 - travel) * 16 * depthCue).toFixed(2)}px`,
+            );
+          });
+        },
+        scrollTrigger: {
+          trigger: area,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.45,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const proteinIndex = Math.min(
+              SHOWS.length - 1,
+              Math.floor(self.progress * SHOWS.length),
+            );
+            if (showIdRef.current !== SHOWS[proteinIndex].id) {
+              paintShow(proteinIndex);
+              setActive(proteinIndex);
+              // Keep the same camera pose — only food pack changes.
+              drawFrame(counter.frame);
+            }
+          },
+          onRefresh: (self) => {
+            drawFrame(Math.round(self.progress * (FRAME_COUNT - 1)));
+          },
+        },
       });
 
-      drawFrame(0);
+      // Same dolly language as BowlScroll (no left/right slide).
+      gsap.fromTo(
+        bowl,
+        { scale: 0.9, rotateX: 11, y: 44, transformPerspective: 1400 },
+        {
+          scale: 1.03,
+          rotateX: 0,
+          y: -10,
+          ease: "none",
+          scrollTrigger: {
+            trigger: area,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.7,
+          },
+        },
+      );
     }, rootRef);
 
     return () => ctx.revert();
@@ -384,7 +333,7 @@ export default function PetFitOrbitBowls() {
             مرغ · گوساله · بوقلمون · ماهی
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-p-base text-neutral-600">
-            کاسه و زاویهٔ دوربین ثابت است؛ با اسکرول فقط رنگ و نوع پروتئین نرم عوض می‌شود.
+            کاسه و زاویهٔ دوربین مثل بخش بالا ثابت است؛ با اسکرول فقط پروتئین عوض می‌شود — بدون پرش.
           </p>
         </div>
       </div>
@@ -396,19 +345,11 @@ export default function PetFitOrbitBowls() {
               <div className="product-bowl-halo" aria-hidden="true" />
               <div ref={frameRef} className="product-bowl-frame">
                 <canvas
-                  ref={canvasARef}
-                  className="product-bowl-canvas"
+                  ref={canvasRef}
                   width={IMAGE_SIZE}
                   height={IMAGE_SIZE}
                   role="img"
                   aria-label="کاسهٔ محصول پت‌فیت"
-                />
-                <canvas
-                  ref={canvasBRef}
-                  className="product-bowl-canvas product-bowl-canvas--back"
-                  width={IMAGE_SIZE}
-                  height={IMAGE_SIZE}
-                  aria-hidden="true"
                 />
               </div>
 
