@@ -1,0 +1,18 @@
+{
+  "name": "petfitfood",
+  "private": true,
+  "version": "0.1.0",
+  "description": "PetFit (پت‌فیت) commercial storefront monorepo",
+  "scripts": {
+    "dev": "npm run dev --workspace=@petfit/web",
+    "build": "npm run build --workspace=@petfit/web",
+    "preview": "npm run preview --workspace=@petfit/web",
+    "typecheck": "npm run typecheck --workspace=@petfit/web"
+  },
+  "workspaces": [
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=20"
+  }
+}

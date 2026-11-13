@@ -1,0 +1,272 @@
+[
+  {
+    "id": 20,
+    "count": 0,
+    "description": "",
+    "link": "https://dodopet.ir/category/%d8%a7%d8%b7%d9%84%d8%a7%d8%b9-%d8%b1%d8%b3%d8%a7%d9%86%db%8c/",
+    "name": "اطلاع رسانی",
+    "slug": "%d8%a7%d8%b7%d9%84%d8%a7%d8%b9-%d8%b1%d8%b3%d8%a7%d9%86%db%8c",
+    "taxonomy": "category",
+    "parent": 0,
+    "meta": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories/20",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/taxonomies/category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/posts?categories=20"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "count": 0,
+    "description": "",
+    "link": "https://dodopet.ir/category/%d8%a8%d8%af%d9%88%d9%86-%d8%af%d8%b3%d8%aa%d9%87-%d8%a8%d9%86%d8%af%db%8c/",
+    "name": "بدون دسته بندی",
+    "slug": "%d8%a8%d8%af%d9%88%d9%86-%d8%af%d8%b3%d8%aa%d9%87-%d8%a8%d9%86%d8%af%db%8c",
+    "taxonomy": "category",
+    "parent": 0,
+    "meta": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories/1",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/taxonomies/category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/posts?categories=1"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "count": 0,
+    "description": "",
+    "link": "https://dodopet.ir/category/%d8%aa%da%a9%d9%86%d9%88%d9%84%d9%88%da%98%db%8c/",
+    "name": "تکنولوژی",
+    "slug": "%d8%aa%da%a9%d9%86%d9%88%d9%84%d9%88%da%98%db%8c",
+    "taxonomy": "category",
+    "parent": 0,
+    "meta": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories/17",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/taxonomies/category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/posts?categories=17"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "count": 0,
+    "description": "",
+    "link": "https://dodopet.ir/category/%d8%ae%d8%a8%d8%b1%db%8c/",
+    "name": "خبری",
+    "slug": "%d8%ae%d8%a8%d8%b1%db%8c",
+    "taxonomy": "category",
+    "parent": 0,
+    "meta": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories/19",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/taxonomies/category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/posts?categories=19"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "count": 0,
+    "description": "",
+    "link": "https://dodopet.ir/category/%d8%b9%d9%85%d9%88%d9%85%db%8c/",
+    "name": "عمومی",
+    "slug": "%d8%b9%d9%85%d9%88%d9%85%db%8c",
+    "taxonomy": "category",
+    "parent": 0,
+    "meta": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories/18",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/taxonomies/category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/posts?categories=18"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 291,
+    "count": 5,
+    "description": "",
+    "link": "https://dodopet.ir/category/%d9%85%d8%ac%d9%84%d9%87-%d8%af%d9%88%d8%af%d9%88/",
+    "name": "مجله دودو",
+    "slug": "%d9%85%d8%ac%d9%84%d9%87-%d8%af%d9%88%d8%af%d9%88",
+    "taxonomy": "category",
+    "parent": 0,
+    "meta": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories/291",
+          "targetHints": {
+            "allow": [
+              "GET"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/categories"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/taxonomies/category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://dodopet.ir/wp-json/wp/v2/posts?categories=291"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,15 @@
+---
+description: Fullstack engineering standards for PetFitFood
+alwaysApply: true
+---
+
+# Fullstack standards
+
+- TypeScript strict; no `any` unless justified in a one-line comment.
+- Colocate UI by feature; keep shared primitives thin.
+- Server/API boundaries: validate inputs at the edge; never trust client prices.
+- Prefer derived state over duplicated state (cart totals from line items).
+- Errors: typed results or thrown domain errors — no empty `catch {}`.
+- Env: only via `.env.example` keys; never hardcode secrets or payment keys.
+- Commits: conventional (`feat:`, `fix:`, `chore:`); small focused diffs.
+- Before merge: typecheck + lint + one browser pass on RTL mobile width.

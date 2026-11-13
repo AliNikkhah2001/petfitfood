@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+dist/
+build/
+.next/
+out/
+.turbo/
+.vercel/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs / coverage
+*.log
+npm-debug.log*
+coverage/
+.nyc_output/
+
+# Large reference dumps (keep data JSON; ignore mirrored WP HTML / WP tree)
+petfit/frontend/
+petfit/wordpress/
+petfit/wp_temp_assets/
+petfit/wp_updates/
+petfit/tools/screenshots/
+*.zip
+
+# Local scratch / alternate prototypes
+.scratch/
+pet not fit/
+replicate-3d-bowl-parallax*/
+
+
+# Python
+__pycache__/
+.venv/
+venv/
+
+# Playwright / screenshots temp
+test-results/
+playwright-report/

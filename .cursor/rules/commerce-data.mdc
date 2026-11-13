@@ -1,0 +1,13 @@
+---
+description: Catalog and commerce data conventions from petfit dumps
+globs: "{petfit/raw_data/**,**/catalog/**,**/products/**,**/cart/**}"
+alwaysApply: false
+---
+
+# Commerce data
+
+- Canonical dump: `petfit/raw_data/` (`products.json`, `product_categories.json`, `pages.json`, `posts.json`, `media.json`).
+- Map Woo-like fields into a slim typed `Product` / `Category` model before UI use.
+- Prices: keep currency + minor units explicit; render via a single formatter.
+- Slugs from dump are stable IDs for routes (`/product/:slug`, `/category/:slug`).
+- Do not scrape live WP in app runtime; refresh dumps with `petfit/tools/fetch_api_data.py` offline.

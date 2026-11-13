@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PetFit — Design Board v3 (Official Logo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --indigo: #30246C;
+      --indigo-deep: #242478;
+      --orange: #F09048;
+      --orange-hot: #F06C18;
+      --gold: #F0A830;
+      --spot: #E87524;
+      --cream: #F7F4EE;
+      --paper: #fff;
+      --ink: #2E2A20;
+      --muted: #6B6157;
+      --line: #E8E0D2;
+      --protein-red: #D8183C;
+      --shadow: 0 18px 50px -24px rgba(48, 36, 108, 0.28);
+      --font: "Vazirmatn", sans-serif;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: var(--font); color: var(--ink); line-height: 1.65;
+      background: linear-gradient(165deg, var(--cream), #fff5e6 45%, #efeaf8);
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 80px; }
+    .gate {
+      background: linear-gradient(115deg, var(--indigo), var(--indigo-deep) 55%, var(--orange-hot));
+      color: #fff; border-radius: 18px; padding: 20px 24px; margin-bottom: 24px;
+    }
+    .gate p { margin: 8px 0 0; opacity: 0.92; font-size: 0.92rem; }
+    .logo-hero {
+      display: flex; flex-wrap: wrap; gap: 28px; align-items: center; margin-bottom: 28px;
+    }
+    .logo-hero img.mark {
+      width: min(100%, 340px); height: auto; background: #fff; border-radius: 20px;
+      padding: 20px; border: 1px solid var(--line); box-shadow: var(--shadow);
+    }
+    .logo-hero .meta h1 {
+      margin: 0 0 8px; color: var(--indigo); font-size: clamp(1.8rem, 4vw, 2.6rem);
+    }
+    .logo-hero .meta .tagline { font-weight: 700; margin: 0 0 10px; }
+    .logo-hero .meta p { margin: 0; color: var(--muted); max-width: 36rem; }
+    nav.toc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+    nav.toc a {
+      text-decoration: none; background: var(--paper); border: 1px solid var(--line);
+      padding: 8px 14px; border-radius: 999px; font-size: 0.85rem; color: var(--ink);
+    }
+    section.block { margin-bottom: 40px; scroll-margin-top: 12px; }
+    section.block > h2 { margin: 0 0 6px; color: var(--indigo); font-size: 1.3rem; }
+    section.block > p.sub { margin: 0 0 14px; color: var(--muted); font-size: 0.94rem; }
+    .swatches { display: flex; flex-wrap: wrap; gap: 12px; }
+    .swatch {
+      width: 110px; border-radius: var(--radius); overflow: hidden; background: #fff;
+      border: 1px solid var(--line); box-shadow: var(--shadow);
+    }
+    .swatch .chip { height: 58px; }
+    .swatch figcaption { padding: 8px; font-size: 0.68rem; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: inherit; font-weight: 700; border: none; border-radius: var(--radius);
+      padding: 12px 20px; font-size: 0.92rem;
+    }
+    .btn-orange { background: var(--orange-hot); color: #fff; }
+    .btn-indigo { background: var(--indigo); color: #fff; }
+    .btn-gold { background: var(--gold); color: var(--ink); }
+    .btn-ghost { background: transparent; border: 1.5px solid var(--indigo); color: var(--indigo); }
+    .row { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .panel {
+      background: #fff; border: 1px solid var(--line); border-radius: 16px;
+      padding: 14px; box-shadow: var(--shadow);
+    }
+    .panel h3 { margin: 0 0 6px; font-size: 1rem; color: var(--indigo); }
+    .panel p { margin: 0; font-size: 0.88rem; color: var(--muted); }
+    .panel img.pack {
+      width: 100%; height: auto; border-radius: 10px; display: block; margin-bottom: 10px;
+      border: 1px solid var(--line);
+    }
+    .hero-mock {
+      border-radius: 22px; overflow: hidden; min-height: 380px; position: relative;
+      background:
+        linear-gradient(100deg, rgba(48,36,108,0.82), rgba(48,36,108,0.25) 50%, rgba(240,108,24,0.35)),
+        linear-gradient(160deg, #30246C, #F09048);
+      color: #fff; padding: 28px 24px; display: flex; flex-direction: column;
+      justify-content: flex-end; gap: 12px;
+    }
+    .hero-mock img.float-logo {
+      position: absolute; top: 20px; inset-inline-end: 20px;
+      width: min(42%, 200px); background: #fff; border-radius: 16px; padding: 10px;
+    }
+    .hero-mock h2 { margin: 0; font-size: clamp(1.25rem, 3vw, 1.75rem); max-width: 16ch; }
+    .stripe {
+      height: 10px; border-radius: 999px; margin: 16px 0;
+      background: linear-gradient(90deg, #2ec4b6, #e91e8c, #a8e063, #F06C18, #242478);
+    }
+    footer.note {
+      margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line);
+      font-size: 0.85rem; color: var(--muted);
+    }
+    a { color: var(--indigo); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="gate">
+      <strong>PR2 Design Gate v3 — لوگو + کاسه‌ها + Figma</strong>
+      <p>Scene A کاسه اصلی = عین پروتوتایپ فعلی. Scene B کاسه‌های کوچک = طراحی/انیمیشن جدید ما. Figma: فایل PetFit Design System ساخته شد.</p>
+    </div>
+
+    <div class="logo-hero">
+      <img class="mark" src="brand/petfit-logo-catdog.png" alt="PetFit official logo" />
+      <div class="meta">
+        <h1>پت‌فیت · PetFit</h1>
+        <p class="tagline">غذای گرم و تازه، اینبار برای کوچولوت</p>
+        <p>
+          ماسکات رسمی cat↔dog · وردمارک نیلی · بدن طلایی/نارنجی.
+          پک‌ها: نارنجی↔آبی (مرغ) و قرمز↔آبی (گوشت). مخاطب: petfitfood.ir · Instagram Petfit_food
+        </p>
+      </div>
+    </div>
+
+    <nav class="toc">
+      <a href="#tokens">توکن‌ها</a>
+      <a href="#packs">پک‌ها</a>
+      <a href="#home">خانه</a>
+      <a href="#ui">UI</a>
+    </nav>
+
+    <section class="block" id="tokens">
+      <h2>پالت استخراج‌شده از برند</h2>
+      <p class="sub">زرد/نارنجی برای گرما · نیلی برای هویت لوگو · سبز فقط اکسنت کم</p>
+      <div class="swatches">
+        <figure class="swatch"><div class="chip" style="background:#30246C"></div><figcaption>indigo #30246C</figcaption></figure>
+        <figure class="swatch"><div class="chip" style="background:#242478"></div><figcaption>indigo-deep</figcaption></figure>
+        <figure class="swatch"><div class="chip" style="background:#F0A830"></div><figcaption>gold #F0A830</figcaption></figure>
+        <figure class="swatch"><div class="chip" style="background:#F09048"></div><figcaption>orange #F09048</figcaption></figure>
+        <figure class="swatch"><div class="chip" style="background:#F06C18"></div><figcaption>orange-hot CTA</figcaption></figure>
+        <figure class="swatch"><div class="chip" style="background:#D8183C"></div><figcaption>beef red</figcaption></figure>
+        <figure class="swatch"><div class="chip" style="background:#F7F4EE"></div><figcaption>cream</figcaption></figure>
+      </div>
+      <div class="stripe" title="pack rainbow accent"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span class="btn btn-orange">شروع اشتراک</span>
+        <span class="btn btn-indigo">داستان پت‌فیت</span>
+        <span class="btn btn-gold">دیدن محصولات</span>
+        <span class="btn btn-ghost">مواد اولیه</span>
+      </div>
+    </section>
+
+    <section class="block" id="packs">
+      <h2>مرجع بسته‌بندی</h2>
+      <p class="sub">آیکون‌های اعتماد، اینفو ۹۰/۱۰/۰، و تم پروتئین از این فایل‌ها می‌آید.</p>
+      <div class="row">
+        <div class="panel">
+          <img class="pack" src="brand/petfit-label-chicken-fresh.png" alt="Chicken Fresh label" />
+          <h3>Chicken Fresh</h3>
+          <p>پنل نارنجی + آبی عمیق · لوگو سوسیس‌داگ دوقلو · FRESH PACK</p>
+        </div>
+        <div class="panel">
+          <img class="pack" src="brand/petfit-label-fresh-beef.png" alt="Fresh Beef label" />
+          <h3>Fresh Beef</h3>
+          <p>پنل قرمز + آبی · همان سیستم تایپ و اعتماد</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="home">
+      <h2>خانه — لوگو رسمی روی هیرو</h2>
+      <p class="sub">دو صحنه کاسه اجباری است: A = BowlScroll عین پروتوتایپ · B = کاسه‌های جدید افقی. هویت = لوگوی رسمی.</p>
+      <div class="hero-mock">
+        <img class="float-logo" src="brand/petfit-logo-catdog.png" alt="" />
+        <h2>غذای گرم و تازه، اینبار برای کوچولوت</h2>
+        <p style="margin:0;opacity:.9;max-width:34ch">Organic pet food producer — بسته‌های اشتراکی، نه کاسه تکی.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span class="btn btn-orange">شروع اشتراک</span>
+          <span class="btn btn-gold">چرا پت‌فیت؟</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="ui">
+      <h2>قوانین UI</h2>
+      <div class="row">
+        <div class="panel"><h3>لوگو</h3><p>فقط PNG رسمی — نه SVG بنفش clone قدیمی</p></div>
+        <div class="panel"><h3>ماسکات</h3><p>Q3 قفل: شخصیت cat↔dog برند</p></div>
+        <div class="panel"><h3>CTA</h3><p>نارنجی داغ · لینک‌های جدی نیلی</p></div>
+        <div class="panel"><h3>تماس</h3><p>petfitfood.ir · Petfit_food</p></div>
+      </div>
+    </section>
+
+    <footer class="note">
+      Files: <code>brand/logo/petfit-logo-catdog.png</code> ·
+      <code>brand/packaging/*.png</code> · docs به‌روز شدند.
+      <br />اگر اوکی است: <strong>design approved</strong>
+    </footer>
+  </div>
+</body>
+</html>

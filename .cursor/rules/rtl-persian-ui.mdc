@@ -1,0 +1,14 @@
+---
+description: RTL Persian storefront UI conventions
+globs: "**/*.{tsx,ts,css,html}"
+alwaysApply: false
+---
+
+# RTL / fa-IR UI
+
+- Root: `dir="rtl"` and `lang="fa-IR"`.
+- Use logical CSS (`ms`/`me`, `ps`/`pe`, `start`/`end`) — avoid raw `left`/`right` unless mirroring icons.
+- Persian numerals only when product copy requires them; keep code/IDs ASCII.
+- Fonts: load a purposeful Persian-capable display + body pair; never default Inter/Roboto/Arial stacks for marketing surfaces.
+- Landing hero: brand-first, one headline, one support line, one CTA group, one dominant visual — no card grids in the hero.
+- Motion: intentional GSAP/scroll scenes (2–3), not decorative noise.

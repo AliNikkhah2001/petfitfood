@@ -1,0 +1,79 @@
+[
+  {
+    "id": 238,
+    "name": "اشتراک 14 روزه",
+    "slug": "subscription-14-day",
+    "description": "",
+    "parent": 0,
+    "count": 6,
+    "image": null,
+    "review_count": 0,
+    "permalink": "https://dodopet.ir/product-category/subscription-14-day/"
+  },
+  {
+    "id": 240,
+    "name": "اشتراک 7 روزه",
+    "slug": "subscription-7-day",
+    "description": "",
+    "parent": 0,
+    "count": 6,
+    "image": null,
+    "review_count": 0,
+    "permalink": "https://dodopet.ir/product-category/subscription-7-day/"
+  },
+  {
+    "id": 239,
+    "name": "اشتراک اختصاصی",
+    "slug": "custom-dog-food",
+    "description": "",
+    "parent": 0,
+    "count": 1,
+    "image": null,
+    "review_count": 0,
+    "permalink": "https://dodopet.ir/product-category/custom-dog-food/"
+  },
+  {
+    "id": 244,
+    "name": "پک آشنایی",
+    "slug": "intro-pack",
+    "description": "",
+    "parent": 0,
+    "count": 2,
+    "image": null,
+    "review_count": 0,
+    "permalink": "https://dodopet.ir/product-category/intro-pack/"
+  },
+  {
+    "id": 288,
+    "name": "سگ‌های بزرگ",
+    "slug": "large-dogs",
+    "description": "",
+    "parent": 0,
+    "count": 6,
+    "image": null,
+    "review_count": 0,
+    "permalink": "https://dodopet.ir/product-category/large-dogs/"
+  },
+  {
+    "id": 286,
+    "name": "سگ‌های کوچک",
+    "slug": "small-dogs",
+    "description": "",
+    "parent": 0,
+    "count": 6,
+    "image": null,
+    "review_count": 0,
+    "permalink": "https://dodopet.ir/product-category/small-dogs/"
+  },
+  {
+    "id": 287,
+    "name": "سگ‌های متوسط",
+    "slug": "medium-dogs",
+    "description": "",
+    "parent": 0,
+    "count": 6,
+    "image": null,
+    "review_count": 0,
+    "permalink": "https://dodopet.ir/product-category/medium-dogs/"
+  }
+]
