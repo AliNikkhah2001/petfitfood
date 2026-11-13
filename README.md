@@ -1,29 +1,45 @@
 # PetFitFood
 
-Commercial fresh pet-food storefront (fa-IR / RTL).
+Commercial fresh pet-food storefront (fa-IR / RTL) — Vite React storefront + Wagtail headless CMS.
 
-## What’s in this workspace
+## Apps
 
-- `petfit/raw_data/` — Woo/WP JSON catalog dump (15 products, 7 categories, pages, posts, media)
-- `petfit/frontend/` — static HTML mirror of the live WP site (reference only)
-- `petfit yellow.zip` (+ other zips) — Vite/React/GSAP landing prototypes
-- `.cursor/rules/` + `.cursor/skills/` — agent engineering standards
-
-Live reference: [dodopet.ir](https://dodopet.ir/)
-
-## Repo
-
-Empty GitHub remote is linked:
-
-`https://github.com/AliNikkhah2001/petfitfood.git`
-
-No commits yet — first PRs will scaffold the app from the yellow template + typed catalog.
-
-## Local agent tooling
-
-| Tool | Role |
+| Path | Role |
 | --- | --- |
-| Project skills | commerce, RTL UI, browser QA |
-| Built-in | `/split-to-prs`, `/simplify`, deploy-with-vercel, ego-browser |
-| Browser | Cursor IDE browser + ego-browser |
-| Plugin | Figma (installed); Vercel install was cancelled/timed out |
+| `apps/web` | Storefront (Vite + React 19 + Tailwind 4 + GSAP) |
+| `apps/cms` | Wagtail admin + `/api/v1` catalog & orders |
+
+Brand in data may still say دودو/dodopet in legacy dumps; product brand is **پت‌فیت / PetFit**.
+
+## Local development
+
+```bash
+# Storefront
+npm install
+npm run dev                 # http://127.0.0.1:5173
+
+# CMS (separate terminal)
+cd apps/cms
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_catalog
+python manage.py runserver 127.0.0.1:8000
+```
+
+Or from repo root (after CMS venv exists): `npm run cms:dev`.
+
+- Wagtail admin: http://127.0.0.1:8000/admin/ (seed: `admin` / `petfit-admin`)
+- API: http://127.0.0.1:8000/api/v1/products/
+- Web env: copy `apps/web/.env.example` → `.env` if you need a non-default API URL
+
+Storefront falls back to local `catalog.ts` when the API is unreachable.
+
+## Sitemap (web)
+
+`/` · `/subscriptions` · `/shop` · `/product/:slug` · `/cart` · `/checkout` · `/about` · `/faq` · `/contact` · `/magazine` · `/account` · `/dashboard` · legal & auth shells
+
+## Data sources
+
+- `petfit/raw_data/*.json` — WP dump (reference / future import)
+- Curated menu prices — `apps/web/src/data/catalog.ts` + CMS `seed_catalog`

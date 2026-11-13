@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import CartPanel from "../components/CartPanel";
 import {
   BEEF_PRODUCTS,
   CHICKEN_PRODUCTS,
@@ -19,14 +20,16 @@ function ShopCard({ product }: { product: Product }) {
 
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white">
-      <div className="relative aspect-[5/4] bg-secondary-light-beige">
+      <Link to={`/product/${product.slug}`} className="relative aspect-[5/4] bg-secondary-light-beige">
         <img src={product.image} alt={product.nameFa} className="h-full w-full object-cover" />
         <span className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-extrabold text-brand-indigo">
           {product.badge}
         </span>
-      </div>
+      </Link>
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <h2 className="text-base font-extrabold text-neutral-800">{product.nameFa}</h2>
+        <Link to={`/product/${product.slug}`} className="text-base font-extrabold text-neutral-800 hover:text-brand-indigo">
+          {product.nameFa}
+        </Link>
         <p className="text-sm leading-7 text-neutral-600">{product.description}</p>
         <div className="flex flex-wrap gap-1.5">
           {product.prices.map((p) => (
@@ -57,76 +60,6 @@ function ShopCard({ product }: { product: Product }) {
         </button>
       </div>
     </article>
-  );
-}
-
-function CartPanel() {
-  const { lines, totalToman, setQty, removeLine, clear } = useCart();
-
-  if (lines.length === 0) {
-    return (
-      <aside className="rounded-2xl border border-dashed border-neutral-300 bg-white p-5 text-sm text-neutral-500">
-        سبد خرید خالی است. یک وزن را انتخاب کنید و به سبد اضافه کنید.
-      </aside>
-    );
-  }
-
-  return (
-    <aside className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-base font-extrabold text-brand-indigo">سبد خرید</h2>
-        <button type="button" onClick={clear} className="text-xs font-bold text-neutral-500 underline">
-          پاک کردن
-        </button>
-      </div>
-      <ul className="mt-4 space-y-3">
-        {lines.map((line) => (
-          <li key={`${line.productId}-${line.grams}`} className="flex gap-3 border-b border-neutral-100 pb-3">
-            <img src={line.image} alt="" className="h-14 w-14 rounded-xl object-cover" />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-bold text-neutral-800">{line.nameFa}</p>
-              <p className="text-xs text-neutral-500">
-                {line.grams}g · {formatToman(line.unitPrice)}
-              </p>
-              <div className="mt-1 flex items-center gap-2">
-                <button
-                  type="button"
-                  className="grid h-7 w-7 place-items-center rounded-full border border-neutral-200 text-sm font-bold"
-                  onClick={() => setQty(line.productId, line.grams, line.qty - 1)}
-                >
-                  −
-                </button>
-                <span className="text-sm font-bold">{line.qty}</span>
-                <button
-                  type="button"
-                  className="grid h-7 w-7 place-items-center rounded-full border border-neutral-200 text-sm font-bold"
-                  onClick={() => setQty(line.productId, line.grams, line.qty + 1)}
-                >
-                  +
-                </button>
-                <button
-                  type="button"
-                  className="ms-auto text-[11px] font-bold text-red-600"
-                  onClick={() => removeLine(line.productId, line.grams)}
-                >
-                  حذف
-                </button>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <p className="mt-4 flex items-center justify-between text-base font-extrabold text-brand-indigo">
-        <span>جمع</span>
-        <span>{formatToman(totalToman)}</span>
-      </p>
-      <Link
-        to="/checkout"
-        className="mt-4 flex h-12 items-center justify-center rounded-2xl bg-brand-indigo text-sm font-extrabold text-white"
-      >
-        ادامه سفارش
-      </Link>
-    </aside>
   );
 }
 

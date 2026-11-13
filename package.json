@@ -7,7 +7,10 @@
     "dev": "npm run dev --workspace=@petfit/web",
     "build": "npm run build --workspace=@petfit/web",
     "preview": "npm run preview --workspace=@petfit/web",
-    "typecheck": "npm run typecheck --workspace=@petfit/web"
+    "typecheck": "npm run typecheck --workspace=@petfit/web",
+    "cms:migrate": "cd apps/cms && .venv/bin/python manage.py migrate",
+    "cms:seed": "cd apps/cms && .venv/bin/python manage.py seed_catalog",
+    "cms:dev": "cd apps/cms && .venv/bin/python manage.py runserver 127.0.0.1:8000"
   },
   "workspaces": [
     "apps/web"

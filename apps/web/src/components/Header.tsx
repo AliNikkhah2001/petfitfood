@@ -9,10 +9,13 @@ type Panel = "products" | "guide" | null;
 
 const NAV: { label: string; to: string; panel?: Panel }[] = [
   { label: "فروشگاه", to: "/shop" },
+  { label: "اشتراک‌ها", to: "/subscriptions" },
   { label: "محصولات", to: "/#our-brands", panel: "products" },
   { label: "مواد اولیه", to: "/#ingredients" },
   { label: "چرا پت‌فیت؟", to: "/#difference" },
-  { label: "داستان ما", to: "/#planet" },
+  { label: "داستان ما", to: "/about" },
+  { label: "مجله", to: "/magazine" },
+  { label: "تماس", to: "/contact" },
   { label: "راهنمای تغذیه", to: "/#how-its-made", panel: "guide" },
 ];
 
@@ -20,7 +23,7 @@ const PRODUCTS = CATALOG.slice(0, 4).map((p) => ({
   title: p.nameFa,
   copy: p.description,
   image: p.image,
-  href: `/shop#${p.slug}`,
+  href: `/product/${p.slug}`,
 }));
 
 export default function Header() {
@@ -221,7 +224,15 @@ export default function Header() {
                 </svg>
               </button>
               <Link
-                to="/checkout"
+                to="/account"
+                onClick={closeAll}
+                aria-label="حساب کاربری"
+                className="hidden h-9 items-center rounded-full px-3 text-[12px] font-semibold text-neutral-700 transition-colors hover:bg-neutral-100 sm:inline-flex"
+              >
+                حساب
+              </Link>
+              <Link
+                to="/cart"
                 onClick={closeAll}
                 aria-label={`سبد خرید، ${itemCount} قلم`}
                 className="relative grid h-9 min-w-9 place-items-center rounded-full px-2 text-neutral-700 transition-colors hover:bg-neutral-100"
@@ -247,11 +258,11 @@ export default function Header() {
                 </span>
               </Link>
               <Link
-                to="/shop"
+                to="/subscriptions"
                 onClick={closeAll}
                 className="hidden items-center gap-1.5 rounded-full bg-brand-orange-hot px-5 py-2.5 text-p-xs font-semibold text-white sm:inline-flex"
               >
-                خرید آنلاین
+                شروع اشتراک
               </Link>
               <button
                 type="button"
@@ -353,8 +364,11 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link to="/shop" onClick={closeAll} className="a-button mt-6 text-center">
-              خرید آنلاین
+            <Link to="/subscriptions" onClick={closeAll} className="a-button mt-6 text-center">
+              شروع اشتراک
+            </Link>
+            <Link to="/account" onClick={closeAll} className="mt-3 text-center text-sm font-semibold text-brand-indigo">
+              حساب من
             </Link>
           </nav>
         </div>

@@ -1,22 +1,31 @@
 import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { CONTACT, telHref } from "../data/contact";
 import Logo from "./Logo";
 
-const COLUMNS = [
+const COLUMNS: {
+  title: string;
+  links: string[];
+  hrefs: string[];
+  route?: boolean;
+}[] = [
   {
     title: "درباره‌ی پت‌فیت",
     links: ["داستان ما", "مواد اولیه", "منوی ۱۲ گانه", "تماس با ما"],
-    hrefs: ["#planet", "#ingredients", "#our-brands", "#find-store"],
+    hrefs: ["/about", "/#ingredients", "/shop", "/contact"],
+    route: true,
   },
   {
     title: "محصولات",
-    links: ["مرغ", "گوساله", "بوقلمون", "ماهی"],
-    hrefs: ["#our-brands", "#our-brands", "#our-brands", "#our-brands"],
+    links: ["مرغ", "گوساله", "اشتراک‌ها", "فروشگاه"],
+    hrefs: ["/product-category/chicken", "/product-category/beef", "/subscriptions", "/shop"],
+    route: true,
   },
   {
     title: "راهنما",
-    links: ["راهنمای تغذیه", "نظر همراهان", "آماده‌سازی", "خبرنامه"],
-    hrefs: ["#how-its-made", "#reviews", "#ingredients", "#newsletter"],
+    links: ["پرسش‌های متداول", "مجله", "راهنمای تغذیه", "خبرنامه"],
+    hrefs: ["/faq", "/magazine", "/#how-its-made", "#newsletter"],
+    route: true,
   },
   {
     title: "ارتباط",
@@ -136,17 +145,25 @@ export default function Footer() {
                   {column.links.map((link, index) => {
                     const href = column.hrefs[index];
                     const external = href.startsWith("http") || href.startsWith("tel:") || href.startsWith("mailto:");
+                    const isHash = href.startsWith("#");
+                    const isRoute = column.route && !external && !isHash;
+                    const className =
+                      "text-xs leading-6 font-medium text-white/75 transition-colors hover:text-white hover:underline hover:underline-offset-2";
                     return (
                       <li key={link} className="break-words">
-                        <a
-                          href={href}
-                          {...(external
-                            ? { target: "_blank", rel: "noreferrer" }
-                            : {})}
-                          className="text-xs leading-6 font-medium text-white/75 transition-colors hover:text-white hover:underline hover:underline-offset-2"
-                        >
-                          {link}
-                        </a>
+                        {isRoute ? (
+                          <Link to={href} className={className}>
+                            {link}
+                          </Link>
+                        ) : (
+                          <a
+                            href={href}
+                            {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+                            className={className}
+                          >
+                            {link}
+                          </a>
+                        )}
                       </li>
                     );
                   })}
@@ -188,32 +205,47 @@ export default function Footer() {
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {[
               ["فروشگاه", "/shop"],
-              ["فروشگاه‌یاب", "/#find-store"],
+              ["اشتراک‌ها", "/subscriptions"],
+              ["مجله", "/magazine"],
+              ["تماس", "/contact"],
               ["مواد اولیه", "/#ingredients"],
-              ["نظر همراهان", "/#reviews"],
-              ["محصولات", "/#our-brands"],
-            ].map(([label, href]) => (
-              <a
-                key={label}
-                href={href}
-                className="text-xs font-semibold text-white/75 transition-colors hover:text-white"
-              >
-                {label}
-              </a>
-            ))}
+            ].map(([label, href]) =>
+              href.startsWith("/#") ? (
+                <a
+                  key={label}
+                  href={href}
+                  className="text-xs font-semibold text-white/75 transition-colors hover:text-white"
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  key={label}
+                  to={href}
+                  className="text-xs font-semibold text-white/75 transition-colors hover:text-white"
+                >
+                  {label}
+                </Link>
+              ),
+            )}
           </div>
         </div>
 
         <div className="flex flex-col gap-3 py-6 text-[11px] text-white/55 md:flex-row md:items-center md:justify-between">
           <p>© ۱۴۰۵ پت‌فیت. تمامی حقوق محفوظ است.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-1">
-            {["حریم خصوصی", "شرایط استفاده", "دسترس‌پذیری", "نقشه‌ی سایت"].map(
-              (link) => (
-                <a
-                  key={link}
-                  href="#top"
-                  className="font-medium transition-colors hover:text-white"
-                >
+            {[
+              ["حریم خصوصی", "/privacy"],
+              ["شرایط استفاده", "/terms"],
+              ["دسترس‌پذیری", "#top"],
+              ["نقشه‌ی سایت", "/subscriptions"],
+            ].map(([link, href]) =>
+              href.startsWith("/") ? (
+                <Link key={link} to={href} className="font-medium transition-colors hover:text-white">
+                  {link}
+                </Link>
+              ) : (
+                <a key={link} href={href} className="font-medium transition-colors hover:text-white">
                   {link}
                 </a>
               ),

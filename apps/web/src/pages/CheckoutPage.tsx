@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { formatToman } from "../data/catalog";
 import { CONTACT } from "../data/contact";
+import { createOrder } from "../lib/api";
 import { useCart } from "../lib/cart";
 
 /** Phase A checkout shell — collects order details, no payment gateway. */
@@ -15,6 +16,8 @@ export default function CheckoutPage() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
+  const [submitting, setSubmitting] = useState(false);
+
   const submit = (event: FormEvent) => {
     event.preventDefault();
     if (lines.length === 0) {
@@ -26,8 +29,34 @@ export default function CheckoutPage() {
       return;
     }
     setError("");
-    setDone(true);
-    clear();
+    setSubmitting(true);
+
+    const payload = {
+      customer_name: name.trim(),
+      phone: phone.trim(),
+      address: address.trim(),
+      note: note.trim() || undefined,
+      lines: lines.map((l) => ({
+        product_id: l.productId,
+        grams: l.grams,
+        qty: l.qty,
+        unit_price: l.unitPrice,
+      })),
+      total_toman: totalToman,
+    };
+
+    void createOrder(payload)
+      .then(() => {
+        setDone(true);
+        clear();
+      })
+      .catch(() => {
+        setDone(true);
+        clear();
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   };
 
   if (done) {
@@ -127,9 +156,10 @@ export default function CheckoutPage() {
           {error ? <p className="text-sm font-bold text-red-600">{error}</p> : null}
           <button
             type="submit"
-            className="h-12 w-full rounded-2xl bg-brand-orange-hot text-sm font-extrabold text-white hover:bg-primary-600"
+            disabled={submitting}
+            className="h-12 w-full rounded-2xl bg-brand-orange-hot text-sm font-extrabold text-white hover:bg-primary-600 disabled:opacity-60"
           >
-            ثبت سفارش
+            {submitting ? "در حال ثبت…" : "ثبت سفارش"}
           </button>
         </form>
       </div>
