@@ -145,6 +145,18 @@ class Order(ClusterableModel):
         default=0,
         help_text="Estimated ingredient cost for this order",
     )
+    payment_status = models.CharField(
+        max_length=32,
+        default="unpaid",
+        choices=[
+            ("unpaid", "پرداخت‌نشده"),
+            ("pending", "در انتظار پرداخت"),
+            ("paid", "پرداخت‌شده"),
+            ("failed", "ناموفق"),
+        ],
+    )
+    payment_authority = models.CharField(max_length=64, blank=True)
+    payment_ref_id = models.CharField(max_length=64, blank=True)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
 
     panels = [
@@ -158,6 +170,9 @@ class Order(ClusterableModel):
         FieldPanel("note"),
         FieldPanel("total_toman"),
         FieldPanel("cost_toman"),
+        FieldPanel("payment_status"),
+        FieldPanel("payment_authority"),
+        FieldPanel("payment_ref_id"),
         InlinePanel("lines", label="Lines"),
     ]
 
@@ -184,6 +199,9 @@ class Order(ClusterableModel):
             "total_toman": self.total_toman,
             "cost_toman": self.cost_toman,
             "profit_toman": self.profit_toman,
+            "payment_status": self.payment_status,
+            "payment_authority": self.payment_authority,
+            "payment_ref_id": self.payment_ref_id,
             "created_at": self.created_at.isoformat(),
             "lines": [
                 {

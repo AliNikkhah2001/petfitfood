@@ -90,17 +90,21 @@ def otp_request(request):
         expires_at=timezone.now() + timedelta(minutes=5),
     )
 
-    # Dev/SMS placeholder — never ship real secrets; DEBUG exposes code for QA.
-    print(f"[PetFit OTP] {phone} → {code}")
+    from commerce.sms import send_otp_sms
+
+    sms = send_otp_sms(phone, code)
     body: dict = {
-        "ok": True,
+        "ok": bool(sms.get("ok")),
         "phone": phone,
-        "message": "کد تأیید ارسال شد",
+        "message": "کد تأیید ارسال شد" if sms.get("ok") else "ارسال پیامک ناموفق بود",
         "expires_in_sec": 300,
+        "provider": sms.get("provider"),
     }
-    if settings.DEBUG:
+    # Never expose OTP in production; DEBUG / PETFIT_EXPOSE_OTP for local QA.
+    if settings.DEBUG or getattr(settings, "PETFIT_EXPOSE_OTP", False):
         body["debug_code"] = code
-    return JsonResponse(body)
+    status = 200 if sms.get("ok") else 502
+    return JsonResponse(body, status=status)
 
 
 @csrf_exempt
@@ -253,6 +257,98 @@ def order_list(request):
         ]
     )
     return JsonResponse(order.to_api_dict(), status=201)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def order_pay(request, order_id: int):
+    """Start Zarinpal checkout for an existing order."""
+    from commerce.payments import create_payment
+
+    try:
+        order = Order.objects.get(pk=order_id)
+    except Order.DoesNotExist:
+        return JsonResponse({"detail": "Not found"}, status=404)
+
+    if order.payment_status == "paid":
+        return JsonResponse({"detail": "Already paid", "order": order.to_api_dict()})
+
+    callback = getattr(settings, "ZARINPAL_CALLBACK_URL", "") or ""
+    if not callback:
+        callback = request.build_absolute_uri("/api/v1/payments/zarinpal/callback/")
+
+    result = create_payment(
+        amount_toman=order.total_toman,
+        description=f"PetFit order #{order.pk}",
+        callback_url=callback,
+        mobile=order.phone,
+    )
+    if result.get("disabled"):
+        return JsonResponse(
+            {
+                "ok": False,
+                "disabled": True,
+                "detail": "درگاه پرداخت پیکربندی نشده؛ سفارش بدون پرداخت ثبت شد",
+                "order": order.to_api_dict(),
+            }
+        )
+    if not result.get("ok"):
+        return JsonResponse(
+            {"ok": False, "detail": result.get("detail") or "Payment start failed"},
+            status=502,
+        )
+
+    order.payment_authority = str(result.get("authority") or "")
+    order.payment_status = "pending"
+    order.save(update_fields=["payment_authority", "payment_status"])
+    return JsonResponse(
+        {
+            "ok": True,
+            "payment_url": result.get("payment_url"),
+            "authority": order.payment_authority,
+            "order": order.to_api_dict(),
+        }
+    )
+
+
+@require_GET
+def zarinpal_callback(request):
+    """Zarinpal returns here; verify then redirect to the storefront."""
+    from django.shortcuts import redirect
+
+    from commerce.payments import verify_payment
+
+    authority = str(request.GET.get("Authority") or request.GET.get("authority") or "")
+    status = str(request.GET.get("Status") or request.GET.get("status") or "")
+    frontend = getattr(settings, "PETFIT_FRONTEND_URL", "http://127.0.0.1:5173").rstrip(
+        "/"
+    )
+
+    order = (
+        Order.objects.filter(payment_authority=authority).order_by("-created_at").first()
+        if authority
+        else None
+    )
+    if not order:
+        return redirect(f"{frontend}/checkout?pay=missing")
+
+    if status.upper() != "OK":
+        order.payment_status = "failed"
+        order.save(update_fields=["payment_status"])
+        return redirect(f"{frontend}/checkout?pay=failed&order={order.pk}")
+
+    verified = verify_payment(amount_toman=order.total_toman, authority=authority)
+    if not verified.get("ok"):
+        order.payment_status = "failed"
+        order.save(update_fields=["payment_status"])
+        return redirect(f"{frontend}/checkout?pay=failed&order={order.pk}")
+
+    order.payment_status = "paid"
+    order.payment_ref_id = str(verified.get("ref_id") or "")
+    if order.status == "new":
+        order.status = "confirmed"
+    order.save(update_fields=["payment_status", "payment_ref_id", "status"])
+    return redirect(f"{frontend}/checkout?pay=ok&order={order.pk}&ref={order.payment_ref_id}")
 
 
 @csrf_exempt

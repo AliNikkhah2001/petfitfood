@@ -57,4 +57,19 @@ Storefront deploys from `master` via `.github/workflows/deploy-pages.yml` to:
 
 https://alinikkhah2001.github.io/petfitfood/
 
-CMS/API is not hosted on Pages — the site uses the local catalog fallback when the API is unreachable.
+Optional: set repo variable `VITE_API_BASE_URL` to your public API so Pages talks to CMS.
+
+## Production API (Docker)
+
+```bash
+cp apps/cms/.env.example .env   # fill secrets
+npm run cms:up                  # postgres + gunicorn on :8000
+```
+
+Or connect `render.yaml` on Render.com. Set `KAVENEGAR_API_KEY` for real OTP SMS and `ZARINPAL_MERCHANT_ID` for online checkout.
+
+## E2E
+
+```bash
+npm run test:e2e --workspace=@petfit/web -- --project=desktop
+```

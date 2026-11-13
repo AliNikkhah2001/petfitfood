@@ -10,7 +10,10 @@
     "typecheck": "npm run typecheck --workspace=@petfit/web",
     "cms:migrate": "cd apps/cms && .venv/bin/python manage.py migrate",
     "cms:seed": "cd apps/cms && .venv/bin/python manage.py seed_catalog",
-    "cms:dev": "cd apps/cms && .venv/bin/python manage.py runserver 127.0.0.1:8000"
+    "cms:dev": "cd apps/cms && .venv/bin/python manage.py runserver 127.0.0.1:8000",
+    "cms:up": "docker compose up --build -d",
+    "cms:down": "docker compose down",
+    "test:e2e": "npm run test:e2e --workspace=@petfit/web"
   },
   "workspaces": [
     "apps/web"

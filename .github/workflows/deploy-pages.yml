@@ -29,6 +29,8 @@ jobs:
           VITE_BASE: /petfitfood/
           # Absolute router/asset root (singlefile rewrites BASE_URL to ./)
           VITE_ROUTER_BASE: /petfitfood
+          # Optional public API (repo variable VITE_API_BASE_URL)
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
         run: npm run build
       - name: SPA fallback for project Pages
         run: cp apps/web/dist/index.html apps/web/dist/404.html

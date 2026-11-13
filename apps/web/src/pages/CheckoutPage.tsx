@@ -1,16 +1,17 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { formatToman } from "../data/catalog";
 import { CONTACT } from "../data/contact";
-import { createOrder } from "../lib/api";
+import { createOrder, startOrderPayment } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { useCart } from "../lib/cart";
 
-/** Phase A checkout shell — collects order details, no payment gateway. */
+/** Checkout — creates order, then redirects to Zarinpal when gateway is configured. */
 export default function CheckoutPage() {
   const { lines, totalToman, clear } = useCart();
   const { customer, token, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
@@ -18,9 +19,28 @@ export default function CheckoutPage() {
   const [postalCode, setPostalCode] = useState("");
   const [note, setNote] = useState("");
   const [done, setDone] = useState(false);
+  const [payNote, setPayNote] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [prefilled, setPrefilled] = useState(false);
+
+  useEffect(() => {
+    const pay = params.get("pay");
+    if (!pay) return;
+    if (pay === "ok") {
+      setDone(true);
+      setPayNote(
+        params.get("ref")
+          ? `پرداخت موفق — کد پیگیری: ${params.get("ref")}`
+          : "پرداخت با موفقیت انجام شد.",
+      );
+      clear();
+    } else if (pay === "failed") {
+      setError("پرداخت ناموفق بود. می‌توانید دوباره از سبد تلاش کنید.");
+    } else if (pay === "missing") {
+      setError("سفارش پرداخت پیدا نشد.");
+    }
+  }, [params, clear]);
 
   useEffect(() => {
     if (authLoading || prefilled || !customer) return;
@@ -67,9 +87,26 @@ export default function CheckoutPage() {
     };
 
     void createOrder(payload)
-      .then(() => {
-        setDone(true);
-        clear();
+      .then(async (order) => {
+        try {
+          const pay = await startOrderPayment(order.id);
+          if (pay.ok && pay.payment_url) {
+            window.location.assign(pay.payment_url);
+            return;
+          }
+          // Gateway not configured — accept unpaid order (COD / follow-up).
+          setDone(true);
+          setPayNote(
+            pay.disabled
+              ? "سفارش ثبت شد. درگاه آنلاین فعلاً فعال نیست؛ برای پرداخت هماهنگ می‌شویم."
+              : "سفارش ثبت شد.",
+          );
+          clear();
+        } catch {
+          setDone(true);
+          setPayNote("سفارش ثبت شد. شروع پرداخت آنلاین ممکن نبود.");
+          clear();
+        }
       })
       .catch(() => {
         setError("ثبت سفارش ناموفق بود. دوباره تلاش کنید.");
@@ -84,7 +121,7 @@ export default function CheckoutPage() {
       <div className="mx-auto max-w-lg px-4 py-20 text-center">
         <h1 className="text-2xl font-extrabold text-brand-indigo">سفارش شما ثبت شد</h1>
         <p className="mt-3 text-sm leading-7 text-neutral-600">
-          به‌زودی برای هماهنگی ارسال با شما تماس می‌گیریم. پشتیبانی:{" "}
+          {payNote || "به‌زودی برای هماهنگی ارسال با شما تماس می‌گیریم."} پشتیبانی:{" "}
           <span dir="ltr">{CONTACT.phoneMobile}</span>
         </p>
         <Link to="/shop" className="mt-6 inline-flex a-button">
@@ -106,7 +143,7 @@ export default function CheckoutPage() {
         </button>
         <h1 className="mt-4 text-h-4xl text-brand-indigo">تکمیل سفارش</h1>
         <p className="mt-2 text-sm text-neutral-600">
-          مرحلهٔ اول — بدون درگاه پرداخت؛ جزئیات سفارش برای پیگیری ذخیره می‌شود.
+          ثبت سفارش و پرداخت آنلاین (زرین‌پال) در صورت فعال بودن درگاه.
         </p>
 
         {!token && !authLoading ? (
@@ -206,7 +243,7 @@ export default function CheckoutPage() {
             disabled={submitting}
             className="h-12 w-full rounded-2xl bg-brand-orange-hot text-sm font-extrabold text-white hover:bg-primary-600 disabled:opacity-60"
           >
-            {submitting ? "در حال ثبت…" : "ثبت سفارش"}
+            {submitting ? "در حال ثبت…" : "ثبت و پرداخت"}
           </button>
         </form>
       </div>

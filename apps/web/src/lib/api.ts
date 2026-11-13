@@ -102,8 +102,20 @@ export type ApiOrder = {
   total_toman: number;
   cost_toman?: number;
   profit_toman?: number;
+  payment_status?: string;
+  payment_authority?: string;
+  payment_ref_id?: string;
   created_at: string;
   lines?: CreateOrderLine[];
+};
+
+export type StartPaymentResponse = {
+  ok: boolean;
+  disabled?: boolean;
+  payment_url?: string;
+  authority?: string;
+  detail?: string;
+  order?: ApiOrder;
 };
 
 export type IngredientPlanRow = {
@@ -248,6 +260,13 @@ export async function createOrder(payload: CreateOrderPayload): Promise<ApiOrder
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export async function startOrderPayment(orderId: string): Promise<StartPaymentResponse> {
+  return fetchJson<StartPaymentResponse>(
+    `/api/v1/orders/${encodeURIComponent(orderId)}/pay/`,
+    { method: "POST", body: "{}" },
+  );
 }
 
 export async function getOrders(): Promise<ApiOrder[]> {

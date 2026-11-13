@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: petfit
+      POSTGRES_USER: petfit
+      POSTGRES_PASSWORD: petfit
+    volumes:
+      - petfit_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U petfit -d petfit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./apps/cms
+    ports:
+      - "8001:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: petfit_cms.settings.production
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-change-me-in-production-petfit-32chars}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,api,.loca.lt}
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-http://127.0.0.1:8000,http://localhost:8000}
+      DATABASE_URL: postgres://petfit:petfit@db:5432/petfit
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-https://alinikkhah2001.github.io,http://127.0.0.1:5173,http://localhost:5173}
+      PETFIT_FRONTEND_URL: ${PETFIT_FRONTEND_URL:-https://alinikkhah2001.github.io/petfitfood}
+      PETFIT_EXPOSE_OTP: ${PETFIT_EXPOSE_OTP:-0}
+      KAVENEGAR_API_KEY: ${KAVENEGAR_API_KEY:-}
+      KAVENEGAR_OTP_TEMPLATE: ${KAVENEGAR_OTP_TEMPLATE:-}
+      ZARINPAL_MERCHANT_ID: ${ZARINPAL_MERCHANT_ID:-}
+      ZARINPAL_SANDBOX: ${ZARINPAL_SANDBOX:-1}
+      ZARINPAL_CALLBACK_URL: ${ZARINPAL_CALLBACK_URL:-}
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME:-admin}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD:-petfit-admin}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL:-admin@petfit.local}
+      PETFIT_SEED_ON_BOOT: "1"
+      SESSION_COOKIE_SECURE: "0"
+      CSRF_COOKIE_SECURE: "0"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - petfit_media:/app/media
+      - petfit_data:/app/data
+
+volumes:
+  petfit_pg:
+  petfit_media:
+  petfit_data:

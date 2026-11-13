@@ -13,5 +13,11 @@ urlpatterns = [
     path("auth/me/", commerce_api.me, name="api-me"),
     path("orders/", commerce_api.order_list, name="api-orders"),
     path("orders/<int:order_id>/", commerce_api.order_update, name="api-order-update"),
+    path("orders/<int:order_id>/pay/", commerce_api.order_pay, name="api-order-pay"),
+    path(
+        "payments/zarinpal/callback/",
+        commerce_api.zarinpal_callback,
+        name="api-zarinpal-callback",
+    ),
     path("admin/stats/", commerce_api.admin_stats, name="api-admin-stats"),
 ]

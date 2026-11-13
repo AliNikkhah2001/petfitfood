@@ -1,0 +1,40 @@
+# Blueprint for https://render.com — connect this repo and deploy the API service.
+services:
+  - type: web
+    name: petfit-api
+    runtime: docker
+    dockerfilePath: ./apps/cms/Dockerfile
+    dockerContext: ./apps/cms
+    plan: free
+    healthCheckPath: /api/v1/products/
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: petfit_cms.settings.production
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: petfit-db
+          property: connectionString
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://alinikkhah2001.github.io
+      - key: PETFIT_FRONTEND_URL
+        value: https://alinikkhah2001.github.io/petfitfood
+      - key: PETFIT_EXPOSE_OTP
+        value: "0"
+      - key: ZARINPAL_SANDBOX
+        value: "1"
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
+      - key: CSRF_COOKIE_SECURE
+        value: "1"
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: admin
+      - key: DJANGO_SUPERUSER_PASSWORD
+        generateValue: true
+
+databases:
+  - name: petfit-db
+    plan: free
