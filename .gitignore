@@ -52,3 +52,7 @@ venv/
 # Playwright / screenshots temp
 test-results/
 playwright-report/
+
+# Raw Telegram / asset dump (curated copies live under apps/web/public/content)
+contents/
+

@@ -5,7 +5,15 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react";
-import { BRAND_IMAGES, INGREDIENT_IMAGES, PLANET_PHOTO } from "../lib/assets";
+import { PLANET_PHOTO } from "../lib/assets";
+import {
+  BEEF_PRODUCTS,
+  CHICKEN_PRODUCTS,
+  INGREDIENT_SHOWCASE,
+  formatToman,
+  type Product,
+} from "../data/catalog";
+import { CONTACT, telHref } from "../data/contact";
 import BenefitIcon, { type BenefitIconName } from "./BenefitIcon";
 
 export function Reveal({
@@ -110,128 +118,95 @@ function CarouselButton({
   );
 }
 
-/* PetFit product family */
-
-const BRANDS = [
-  {
-    title: "وعده‌ی تازه برای سگ‌ها",
-    copy: "پروتئین خوش‌خوراک و سبزیجات؛ برای یک کاسه‌ی کامل و متعادل.",
-    image: BRAND_IMAGES.dog,
-    badge: "برای سگ‌ها",
-  },
-  {
-    title: "غذای روزانه‌ی گربه‌ها",
-    copy: "ترکیب خوش‌طعم با مواد اولیه‌ی باکیفیت برای گربه‌های کنجکاو.",
-    image: BRAND_IMAGES.cat,
-    badge: "برای گربه‌ها",
-  },
-  {
-    title: "تشویقی‌های پت‌فیت",
-    copy: "یک میان‌وعده‌ی ساده برای تمرین، بازی و لحظه‌های دوست‌داشتنی.",
-    image: BRAND_IMAGES.treats,
-    badge: "تشویقی تازه",
-  },
-  {
-    title: "تغذیه‌ی متناسب با زندگی‌شان",
-    copy: "انتخاب مواد اولیه با توجه به سن، اندازه و میزان فعالیت هر حیوان.",
-    image: BRAND_IMAGES.wellbeing,
-    badge: "سبک زندگی سالم",
-  },
-];
+/* Official Instagram product menu — curated cards, not a dump */
 
 const MARQUEE = [
-  "مواد اولیه‌ی واقعی",
-  "تغذیه‌ی متعادل",
-  "پروتئین باکیفیت",
-  "برای سگ و گربه",
-  "طعم دوست‌داشتنی",
+  "منوی رسمی پت‌فیت",
+  "مرغ · گوساله",
+  "Pro · Normal · سوپ",
+  "بدون نگهدارنده",
+  "@petfit.food",
 ];
 
-export function Brands() {
-  const trackRef = useRef<HTMLDivElement | null>(null);
-  const scroll = (direction: 1 | -1) => {
-    trackRef.current?.scrollBy({ left: direction * 340, behavior: "smooth" });
-  };
+function ProductCard({ product }: { product: Product }) {
+  return (
+    <article
+      id={product.slug}
+      className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-[0_12px_32px_-24px_rgba(48,36,108,0.35)]"
+    >
+      <div className="relative aspect-[5/4] overflow-hidden bg-secondary-light-beige">
+        <img
+          src={product.image}
+          alt={product.nameFa}
+          loading="lazy"
+          className="h-full w-full object-cover"
+        />
+        <span className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-extrabold text-brand-indigo shadow-sm">
+          {product.badge}
+        </span>
+      </div>
+      <div className="flex flex-1 flex-col gap-2 p-4 md:p-5">
+        <h3 className="text-base font-extrabold text-neutral-800 md:text-lg">{product.nameFa}</h3>
+        <p className="text-sm leading-7 text-neutral-600">{product.description}</p>
+        <ul className="mt-1 flex flex-wrap gap-1.5">
+          {product.ingredients.slice(0, 5).map((ing) => (
+            <li
+              key={ing}
+              className="rounded-full bg-secondary-off-white px-2.5 py-1 text-[10px] font-bold text-brand-indigo"
+            >
+              {ing}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-auto space-y-1 border-t border-neutral-100 pt-3">
+          {product.prices.map((p) => (
+            <div key={p.grams} className="flex items-center justify-between text-sm">
+              <span className="font-bold text-neutral-500">{p.grams} گرم</span>
+              <span className="font-extrabold text-brand-orange-hot">{formatToman(p.priceToman)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </article>
+  );
+}
 
+export function Brands() {
   return (
     <section id="our-brands" className="bg-white py-16 md:py-20">
       <div className="o-container--xl o-container">
         <Reveal>
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end">
-            <div className="lg:w-[370px] lg:shrink-0">
-              <p className="eyebrow">دنیای پت‌فیت</p>
-              <h2 className="mt-3 text-h-4xl leading-[1.3] text-neutral-700 md:text-h-5xl">
-                غذای تازه برای هر شخصیت
-              </h2>
-            </div>
-            <p className="grow text-sm leading-8 font-medium text-neutral-600 md:text-base lg:mr-12">
-              هر حیوان خانگی سلیقه و نیاز خودش را دارد. پت‌فیت ترکیبات ساده و
-              خوش‌خوراک را کنار هم می‌آورد تا انتخاب غذای روزانه، برای شما
-              مطمئن‌تر و برای او دوست‌داشتنی‌تر باشد.
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow">منوی محصولات</p>
+            <h2 className="mt-3 text-h-4xl leading-[1.3] text-neutral-700 md:text-h-5xl">
+              قیمت و مشخصات رسمی پت‌فیت
+            </h2>
+            <p className="mt-3 text-sm leading-8 font-medium text-neutral-600 md:text-base">
+              برگرفته از منوی اینستاگرام {CONTACT.instagram} — هر کارت یک محصول با وزن، قیمت و
+              مواد اولیه واقعی.
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-9 flex items-center justify-between gap-4">
-          <p className="text-[11px] font-semibold text-neutral-400">
-            یک انتخاب خوش‌خوراک برای هر روز
-          </p>
-          <div className="flex gap-2">
-            <CarouselButton
-              direction="left"
-              label="محصول قبلی"
-              onClick={() => scroll(-1)}
-            />
-            <CarouselButton
-              direction="right"
-              label="محصول بعدی"
-              onClick={() => scroll(1)}
-            />
+        <div className="mt-10">
+          <h3 className="mb-4 text-lg font-extrabold text-brand-indigo">خانواده مرغ</h3>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {CHICKEN_PRODUCTS.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
           </div>
         </div>
 
-        <div
-          ref={trackRef}
-          className="no-scrollbar mt-4 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3"
-        >
-          {BRANDS.map((brand) => (
-            <article
-              key={brand.title}
-              className="group flex w-[270px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-primary-400 hover:shadow-[0_24px_50px_-32px_rgba(122,82,0,0.32)] md:w-[292px]"
-            >
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary-light-beige">
-                <img
-                  src={brand.image}
-                  alt={brand.title}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/45 to-transparent" />
-                <span className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-bold text-primary-700 shadow-sm">
-                  {brand.badge}
-                </span>
-                <span className="petfit-card-mark absolute bottom-3 right-4">PetFit</span>
-              </div>
-              <div className="flex grow flex-col p-5">
-                <h3 className="text-lg font-bold leading-relaxed text-neutral-800">
-                  {brand.title}
-                </h3>
-                <p className="mt-2 grow text-sm leading-7 font-medium text-neutral-600">
-                  {brand.copy}
-                </p>
-                <a
-                  href="#find-store"
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-primary-700 transition-colors hover:text-primary-600"
-                >
-                  پیدا کردن فروشگاه
-                  <ArrowIcon />
-                </a>
-              </div>
-            </article>
-          ))}
+        <div className="mt-12">
+          <h3 className="mb-4 text-lg font-extrabold text-brand-indigo">خانواده گوساله</h3>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {BEEF_PRODUCTS.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
         </div>
 
-        <div className="mt-9 overflow-hidden border-y border-neutral-200 py-5">
+        <div className="mt-12 overflow-hidden border-y border-neutral-200 py-5">
           <div className="marquee-track items-center gap-14">
             {[...MARQUEE, ...MARQUEE].map((label, index) => (
               <span
@@ -382,8 +357,8 @@ export function Planet() {
               <a href="#ingredients" className="a-button">
                 دیدن مواد اولیه
               </a>
-              <a href="#our-brands" className="a-button-outline">
-                آشنایی با محصولات
+              <a href="/shop" className="a-button-outline">
+                خرید از فروشگاه
               </a>
             </div>
           </Reveal>
@@ -610,13 +585,50 @@ export function StoreCta() {
         <div className="overflow-hidden rounded-[28px] bg-secondary-light-leaf">
           <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-7 md:p-12">
-              <p className="eyebrow">پت‌فیت را از کجا پیدا کنم؟</p>
+              <p className="eyebrow">تماس و سفارش</p>
               <h2 className="mt-3 max-w-[500px] text-h-4xl leading-[1.35] text-neutral-800 md:text-h-5xl">
-                یک فروشگاه، به فاصله‌ی چند قدم.
+                مستقیم با پت‌فیت در ارتباط باشید.
               </h2>
+              <a
+                href="/shop"
+                className="mt-4 inline-flex rounded-full bg-brand-orange-hot px-5 py-2.5 text-sm font-extrabold text-white"
+              >
+                خرید آنلاین از فروشگاه
+              </a>
+              <ul className="mt-4 space-y-2 text-sm font-semibold text-neutral-800 md:text-base">
+                <li>
+                  موبایل:{" "}
+                  <a className="text-primary-700 underline" href={telHref(CONTACT.phoneMobile)} dir="ltr">
+                    {CONTACT.phoneMobile}
+                  </a>
+                </li>
+                <li>
+                  تلفن:{" "}
+                  <a className="text-primary-700 underline" href={telHref(CONTACT.phoneLandline)} dir="ltr">
+                    {CONTACT.phoneLandline}
+                  </a>
+                </li>
+                <li>
+                  اینستاگرام:{" "}
+                  <a
+                    className="text-primary-700 underline"
+                    href={CONTACT.instagramUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    dir="ltr"
+                  >
+                    {CONTACT.instagram}
+                  </a>
+                </li>
+                <li className="leading-7 font-medium text-neutral-700">
+                  آدرس: {CONTACT.address}
+                  <span className="mt-1 block" dir="ltr">
+                    کد پستی {CONTACT.postalCode}
+                  </span>
+                </li>
+              </ul>
               <p className="mt-4 max-w-[500px] text-sm leading-8 font-medium text-neutral-700 md:text-base">
-                نام شهر یا کد پستی‌تان را وارد کنید تا فروشگاه‌های لوازم و غذای
-                حیوانات خانگی را در نقشه ببینید.
+                یا نام شهر را وارد کنید تا فروشگاه‌های نزدیک را روی نقشه ببینید.
               </p>
 
               <form onSubmit={submit} noValidate className="mt-6 max-w-[460px]">
@@ -679,8 +691,8 @@ export function StoreCta() {
 
             <div className="relative min-h-[300px] overflow-hidden bg-primary-300 lg:min-h-full">
               <img
-                src={BRAND_IMAGES.dog}
-                alt="همراهی دل‌نشین یک سگ و صاحبش در زمان غذا"
+                src="/content/products/PetFit_01.jpg"
+                alt="محصولات واقعی پت‌فیت"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover"
               />
@@ -689,11 +701,11 @@ export function StoreCta() {
                 <div>
                   <p className="petfit-card-mark text-[15px]">PetFit</p>
                   <p className="mt-0.5 text-sm font-semibold text-neutral-800">
-                    غذای تازه، برای هر روزِ باهم بودن.
+                    غذای اورگانیک و بالانس‌شده
                   </p>
                 </div>
-                <a href="#our-brands" className="a-button px-4 py-2.5 text-xs">
-                  محصولات
+                <a href="/shop" className="a-button px-4 py-2.5 text-xs">
+                  خرید آنلاین
                 </a>
               </div>
             </div>
@@ -704,68 +716,26 @@ export function StoreCta() {
   );
 }
 
-/* Ingredient gallery */
-
-const INGREDIENTS = [
-  {
-    name: "مرغ تازه",
-    copy: "پروتئینی خوش‌خوراک برای وعده‌های روزانه.",
-    image: INGREDIENT_IMAGES.chicken,
-  },
-  {
-    name: "گوشت گاو",
-    copy: "منبعی سرشار از پروتئین با طعمی دل‌چسب.",
-    image: INGREDIENT_IMAGES.beef,
-  },
-  {
-    name: "ماهی سفید",
-    copy: "پروتئینی لطیف برای تنوع در وعده‌ها.",
-    image: INGREDIENT_IMAGES.whitefish,
-  },
-  {
-    name: "هویج تازه",
-    copy: "سرشار از ریزمغذی‌های مفید و فیبر.",
-    image: INGREDIENT_IMAGES.carrots,
-  },
-  {
-    name: "اسفناج",
-    copy: "سبزی تازه برای ترکیبی رنگارنگ و متعادل.",
-    image: INGREDIENT_IMAGES.spinach,
-  },
-  {
-    name: "کرنبری",
-    copy: "میوه‌ای سرشار از آنتی‌اکسیدان و مواد مغذی.",
-    image: INGREDIENT_IMAGES.cranberries,
-  },
-  {
-    name: "سیب‌زمینی شیرین",
-    copy: "منبعی طبیعی از فیبر و بتاکاروتن.",
-    image: INGREDIENT_IMAGES.sweetPotato,
-  },
-  {
-    name: "لوبیاسبز",
-    copy: "سبزی سرشار از فیبر و ویتامین‌های گوناگون.",
-    image: INGREDIENT_IMAGES.greenBeans,
-  },
-];
+/* Ingredient gallery — real PetFit base formula */
 
 export function Ingredients() {
   return (
     <section id="ingredients" className="bg-secondary-off-white py-16 md:py-20">
       <div className="o-container--xl o-container">
         <Reveal className="mx-auto max-w-[790px] text-center">
-          <p className="eyebrow">ترکیباتی که می‌شناسید</p>
+          <p className="eyebrow">فرمولاسیون پت‌فیت</p>
           <h2 className="mt-3 text-h-4xl leading-[1.35] text-neutral-700 md:text-h-5xl">
-            مواد اولیه‌ی واقعی، بدون پیچیدگی.
+            گوشت پایه + احشاء + سبزیجات مشترک
           </h2>
-          <p className="mx-auto mt-4 max-w-[600px] text-sm leading-8 font-medium text-neutral-500 md:text-base">
-            از مرغ و ماهی تا سبزیجات و میوه‌ها؛ هر کدام سهمی در ساخت یک وعده‌ی
-            متعادل برای دوست پشمالوی شما دارند.
+          <p className="mx-auto mt-4 max-w-[640px] text-sm leading-8 font-medium text-neutral-500 md:text-base">
+            در منوی ۱۲ گانه، سبزیجات (هویج، کدو حلوایی، کدو سبز، سیب‌زمینی) و دل و
+            جگر مرغ در همهٔ محصولات مشترک‌اند؛ تفاوت در گوشت پایه و بافت
+            (Pro / Normal / سوپ) است.
           </p>
         </Reveal>
 
         <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:mt-12 md:grid-cols-4 lg:grid-cols-8 lg:gap-3">
-          {INGREDIENTS.map((ingredient, index) => (
+          {INGREDIENT_SHOWCASE.map((ingredient, index) => (
             <Reveal key={ingredient.name} delay={index * 40}>
               <div className="group flex h-full flex-col items-center text-center">
                 <div className="relative aspect-square w-full max-w-[132px] overflow-hidden rounded-full border-[6px] border-white bg-primary-200 shadow-[0_18px_36px_-26px_rgba(122,82,0,0.35)] transition-transform duration-500 ease-out group-hover:-translate-y-1.5">
@@ -787,9 +757,12 @@ export function Ingredients() {
           ))}
         </div>
 
-        <Reveal className="mt-10 flex justify-center">
+        <Reveal className="mt-10 flex justify-center gap-3">
+          <a href="#instagram-gallery" className="a-button">
+            گالری ویدیوهای اینستاگرام
+          </a>
           <a href="#how-its-made" className="a-button-outline">
-            دیدن شیوه‌ی آماده‌سازی
+            شیوه‌ی آماده‌سازی
           </a>
         </Reveal>
       </div>

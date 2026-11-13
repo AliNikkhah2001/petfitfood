@@ -38,13 +38,13 @@ export default function Hero() {
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3 md:mt-7">
             <a
-              href="#our-brands"
+              href="/shop"
               className="inline-flex items-center justify-center rounded-full bg-brand-orange-hot px-6 py-[13.5px] text-p-sm font-semibold text-white transition-colors hover:bg-primary-600"
             >
-              شروع اشتراک
+              خرید آنلاین
             </a>
-            <a href="#find-store" className="a-button px-6 py-[13.5px]">
-              پیدا کردن فروشگاه
+            <a href="/shop" className="a-button px-6 py-[13.5px]">
+              فروشگاه
             </a>
             <a
               href="#how-its-made"

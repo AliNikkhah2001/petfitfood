@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { INGREDIENT_IMAGES as ING } from "../lib/assets";
-
 gsap.registerPlugin(ScrollTrigger);
 
 const FRAME_COUNT = 90;
@@ -30,7 +28,7 @@ type BowlLabel = {
 const LABELS: BowlLabel[] = [
   {
     frame: 24,
-    text: "سبزیجات سرشار از فیبر و میوه‌های تازه",
+    text: "هویج، کدو حلوایی، کدو سبز و سیب‌زمینی",
     side: "left",
     startTop: 37,
     endTop: 31,
@@ -38,7 +36,7 @@ const LABELS: BowlLabel[] = [
   },
   {
     frame: 31,
-    text: "پروتئین باکیفیت از مرغ، گوشت و ماهی",
+    text: "مرغ، گوساله یا بوقلمون + دل و جگر مرغ",
     side: "right",
     startTop: 48,
     endTop: 42,
@@ -46,7 +44,7 @@ const LABELS: BowlLabel[] = [
   },
   {
     frame: 38,
-    text: "پخت ملایم برای حفظ تازگی و ارزش غذایی",
+    text: "پخت ملایم — بدون نگهدارنده مصنوعی",
     side: "left",
     startTop: 59,
     endTop: 53,
@@ -71,19 +69,18 @@ type IngredientPhoto = {
 /* Ingredient photography floats at separate depths around the product bowl. */
 const PHOTOS: IngredientPhoto[] = [
   {
-    src: ING.carrots,
-    caption: "هویج تازه",
+    src: "/brand/ingredients/carrots.jpg",
+    caption: "هویج",
     x: "32%",
     y: "23%",
     size: 100,
     rotate: "-7deg",
     from: 22,
-    /* z: real depth in px. Nearer chips swing further under pointer tilt. */
     z: 96,
     rate: 0.95,
   },
   {
-    src: ING.chicken,
+    src: "/brand/ingredients/chicken.jpg",
     caption: "مرغ تازه",
     x: "68%",
     y: "19%",
@@ -94,8 +91,8 @@ const PHOTOS: IngredientPhoto[] = [
     rate: 1.25,
   },
   {
-    src: ING.spinach,
-    caption: "اسفناج",
+    src: "/brand/ingredients/pumpkin.jpg",
+    caption: "کدو حلوایی",
     x: "30%",
     y: "82%",
     size: 90,
@@ -105,8 +102,8 @@ const PHOTOS: IngredientPhoto[] = [
     rate: 0.7,
   },
   {
-    src: ING.cranberries,
-    caption: "کرنبری",
+    src: "/brand/ingredients/organs.jpg",
+    caption: "دل و جگر",
     x: "70%",
     y: "80%",
     size: 90,

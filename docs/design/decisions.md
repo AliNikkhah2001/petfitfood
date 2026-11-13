@@ -27,6 +27,7 @@
 | D13 | Magazine v1: index + 3 seeded posts | User Q12 → B |
 | D14 | Design review: HTML board **and** Figma | User Q20 → both |
 | D14a | Figma file: https://www.figma.com/design/LTJzqftN9IF0pd0Y0Wz0px | Created 2026-11-12 |
+| D14b | Personalize overlay CatDog uses the official logo character crop (`/brand/petfit-catdog-mascot.png`); crude vector redraw removed from Figma | 2026-11-13 |
 | D15 | Hero slider: **A/B test both** (single hero vs 2–3 slides) | User Q10 |
 | D16 | Mascot: **official PetFit cat↔dog** (supersedes A/B/C tests) | Logo delivered |
 

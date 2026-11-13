@@ -19,9 +19,46 @@ type Props = {
   onDismiss: () => void;
 };
 
+const DOG_BREEDS = [
+  "شیتزو",
+  "پامرانین",
+  "پودل",
+  "مالتیس",
+  "یورکشایر",
+  "چیهواهوا",
+  "بولداگ فرانسوی",
+  "گلدن رتریور",
+  "لابرادور",
+  "ژرمن شپرد",
+  "هاسکی",
+  "بیگل",
+  "تریر",
+  "اسپیتز",
+  "میکس / ترکیبی",
+  "سایر",
+] as const;
+
+const CAT_BREEDS = [
+  "پرشین",
+  "سیامی",
+  "بریتیش شورت‌هیر",
+  "اسکاتیش فولد",
+  "مین‌کون",
+  "بنگال",
+  "راگدول",
+  "اسفینکس",
+  "خانگی موکوتاه",
+  "خانگی موبلند",
+  "میکس / ترکیبی",
+  "سایر",
+] as const;
+
 const emptyPet = (): PetFields => ({ name: "", weight: "", breed: "" });
 
-function Field({
+const controlClass =
+  "h-9 w-full shrink-0 rounded-xl border-2 border-brand-indigo/20 bg-white px-2.5 text-sm font-semibold text-brand-indigo outline-none transition focus:border-brand-orange-hot sm:h-10 sm:rounded-2xl sm:px-3 sm:text-base lg:h-11";
+
+function TextField({
   id,
   label,
   value,
@@ -38,11 +75,13 @@ function Field({
   placeholder: string;
   type?: string;
   dir?: "ltr" | "rtl";
-  inputMode?: "numeric" | "text" | "tel";
+  inputMode?: "numeric" | "text" | "tel" | "decimal";
 }) {
   return (
-    <label className="flex flex-col gap-1.5" htmlFor={id}>
-      <span className="text-[11px] font-bold text-brand-indigo/90">{label}</span>
+    <label className="flex min-h-0 flex-1 flex-col justify-center gap-0.5" htmlFor={id}>
+      <span className="text-[11px] font-extrabold leading-none text-brand-indigo sm:text-xs">
+        {label}
+      </span>
       <input
         id={id}
         type={type}
@@ -51,54 +90,139 @@ function Field({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-11 w-full rounded-2xl border border-white/50 bg-white/75 px-3.5 text-sm font-semibold text-brand-indigo shadow-sm outline-none backdrop-blur-sm transition focus:border-brand-orange-hot focus:bg-white"
+        className={`${controlClass} placeholder:text-brand-indigo/35`}
       />
     </label>
   );
 }
 
+function NumberField({
+  id,
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  step,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  min: number;
+  max: number;
+  step: number;
+}) {
+  return (
+    <label className="flex min-h-0 flex-1 flex-col justify-center gap-0.5" htmlFor={id}>
+      <span className="text-[11px] font-extrabold leading-none text-brand-indigo sm:text-xs">
+        {label}
+      </span>
+      <input
+        id={id}
+        type="number"
+        inputMode="decimal"
+        dir="ltr"
+        min={min}
+        max={max}
+        step={step}
+        placeholder={`${min}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`${controlClass} placeholder:text-brand-indigo/35`}
+      />
+    </label>
+  );
+}
+
+function SelectField({
+  id,
+  label,
+  value,
+  onChange,
+  options,
+  placeholder,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: readonly string[];
+  placeholder: string;
+}) {
+  return (
+    <label className="flex min-h-0 flex-1 flex-col justify-center gap-0.5" htmlFor={id}>
+      <span className="text-[11px] font-extrabold leading-none text-brand-indigo sm:text-xs">
+        {label}
+      </span>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`${controlClass} appearance-none bg-[length:12px] bg-[left_0.75rem_center] bg-no-repeat pe-3 ps-8 ${
+          value ? "" : "text-brand-indigo/45"
+        }`}
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%2330246C' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
+        }}
+      >
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function PetColumn({
-  title,
-  accent,
   pet,
   setPet,
   idPrefix,
+  side,
 }: {
-  title: string;
-  accent: string;
   pet: PetFields;
   setPet: (next: PetFields) => void;
   idPrefix: string;
+  side: "dog" | "cat";
 }) {
+  const breeds = side === "dog" ? DOG_BREEDS : CAT_BREEDS;
+  const weightMax = side === "dog" ? 90 : 15;
+
   return (
     <div
-      className={`flex min-w-0 flex-1 flex-col gap-3 rounded-[1.75rem] border border-white/40 bg-white/35 p-4 shadow-[0_20px_50px_-30px_rgba(48,36,108,0.45)] backdrop-blur-md md:p-5 ${accent}`}
+      className={`flex min-h-0 min-w-0 flex-1 flex-col gap-1.5 rounded-2xl border-2 bg-white p-2.5 sm:gap-2 sm:p-3 lg:p-4 ${
+        side === "dog" ? "border-brand-orange-hot/40" : "border-brand-indigo/25"
+      }`}
     >
-      <p className="text-center text-sm font-extrabold tracking-tight text-brand-indigo md:text-base">
-        {title}
-      </p>
-      <Field
+      <span className="sr-only">{side === "dog" ? "فرم سگ" : "فرم گربه"}</span>
+      <TextField
         id={`${idPrefix}-name`}
         label="نام"
         value={pet.name}
         onChange={(name) => setPet({ ...pet, name: name.slice(0, 40) })}
         placeholder="مثلاً پوفی"
       />
-      <Field
+      <NumberField
         id={`${idPrefix}-weight`}
         label="وزن (کیلوگرم)"
         value={pet.weight}
-        onChange={(weight) => setPet({ ...pet, weight: weight.replace(/[^\d.]/g, "").slice(0, 6) })}
-        placeholder="مثلاً ۴.۵"
-        inputMode="numeric"
-        dir="ltr"
+        onChange={(weight) => setPet({ ...pet, weight })}
+        min={0.5}
+        max={weightMax}
+        step={0.1}
       />
-      <Field
+      <SelectField
         id={`${idPrefix}-breed`}
         label="نژاد"
         value={pet.breed}
-        onChange={(breed) => setPet({ ...pet, breed: breed.slice(0, 40) })}
-        placeholder="مثلاً شیتزو"
+        onChange={(breed) => setPet({ ...pet, breed })}
+        options={breeds}
+        placeholder="انتخاب نژاد"
       />
     </div>
   );
@@ -141,59 +265,59 @@ export default function PersonalizeOverlay({ open, onUnlock, onDismiss }: Props)
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-stretch justify-center"
+      className="personalize-gate fixed inset-0 z-[80] flex h-[100dvh] max-h-[100dvh] w-screen flex-col overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
     >
       <div
-        className="absolute inset-0 bg-brand-indigo/25 backdrop-blur-xl"
+        className="absolute inset-0 bg-brand-indigo/50 backdrop-blur-2xl"
         aria-hidden="true"
         onClick={onDismiss}
       />
+      <div
+        className="pointer-events-none absolute inset-0 bg-secondary-off-white/30"
+        aria-hidden="true"
+      />
 
-      <div className="relative z-10 flex h-full w-full max-w-5xl flex-col overflow-y-auto px-4 py-5 sm:px-6 md:py-8">
-        <div className="mb-3 flex items-center justify-between gap-3">
+      <form
+        onSubmit={submit}
+        className="relative z-10 mx-auto flex h-full min-h-0 w-full max-w-[100vw] flex-col gap-2 p-2 sm:gap-2.5 sm:p-3 md:p-4 lg:px-6"
+      >
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={onDismiss}
-            className="rounded-full border border-white/50 bg-white/55 px-4 py-2 text-xs font-bold text-brand-indigo backdrop-blur-md transition hover:bg-white"
+            className="rounded-full border-2 border-white/90 bg-white px-3.5 py-2 text-sm font-extrabold text-brand-indigo shadow-sm sm:px-4 sm:text-base"
           >
             بعداً
           </button>
+          <h2
+            id={titleId}
+            className="min-w-0 flex-1 truncate text-center text-base font-extrabold text-brand-indigo sm:text-xl md:text-2xl"
+          >
+            غذای شخصی‌سازی‌شده پت‌فیت
+          </h2>
           <button
             type="button"
             aria-label="بستن"
             onClick={onDismiss}
-            className="grid h-10 w-10 place-items-center rounded-full border border-white/50 bg-white/55 text-brand-indigo backdrop-blur-md transition hover:bg-white"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full border-2 border-white/90 bg-white text-brand-indigo shadow-sm sm:h-11 sm:w-11"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path
-                d="m3 3 10 10M13 3 3 13"
+                d="m2 2 12 12M14 2 2 14"
                 stroke="currentColor"
-                strokeWidth="1.8"
+                strokeWidth="2.4"
                 strokeLinecap="round"
               />
             </svg>
           </button>
         </div>
 
-        <form
-          onSubmit={submit}
-          className="mx-auto flex w-full flex-1 flex-col justify-center gap-5 pb-6"
-        >
-          <div className="text-center">
-            <CatDogDuo className="mb-3" />
-            <h2 id={titleId} className="text-xl font-extrabold text-brand-indigo md:text-2xl">
-              غذای شخصی‌سازی‌شده پت‌فیت
-            </h2>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-brand-indigo/80">
-              مثل لوگوی پت‌فیت، سگ و گربه کنار هم‌اند — مشخصات هر کدام را پر کنید تا بستهٔ مناسب بسازیم.
-            </p>
-          </div>
-
-          <div className="mx-auto w-full max-w-sm">
-            <Field
+        <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-2xl border border-white bg-white/95 p-2.5 shadow-[0_20px_60px_-18px_rgba(48,36,108,0.5)] sm:rounded-3xl sm:p-3.5 md:p-4">
+          <div className="mx-auto w-full max-w-2xl shrink-0 sm:max-w-3xl">
+            <TextField
               id="owner-phone"
               label="شماره موبایل"
               value={phone}
@@ -205,49 +329,38 @@ export default function PersonalizeOverlay({ open, onUnlock, onDismiss }: Props)
             />
           </div>
 
-          <div className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-5">
-            {/* RTL: dog on the right (first in DOM), cat on the left */}
-            <PetColumn
-              title="سگ"
-              accent="ring-1 ring-brand-orange-hot/30"
-              pet={dog}
-              setPet={setDog}
-              idPrefix="dog"
-            />
-            <PetColumn
-              title="گربه"
-              accent="ring-1 ring-brand-indigo/25"
-              pet={cat}
-              setPet={setCat}
-              idPrefix="cat"
-            />
+          <div className="personalize-catdog -mx-2.5 mt-1 w-[calc(100%+1.25rem)] shrink-0 overflow-visible sm:-mx-3.5 sm:mt-2 sm:w-[calc(100%+1.75rem)] md:-mx-4 md:w-[calc(100%+2rem)] lg:-mx-6 lg:w-[calc(100%+3rem)]">
+            <CatDogDuo className="w-full max-w-none" />
+          </div>
+
+          <div className="mt-1 grid min-h-0 w-full flex-1 grid-cols-2 gap-2 sm:mt-2 sm:gap-3 md:gap-5 lg:gap-8">
+            <PetColumn pet={dog} setPet={setDog} idPrefix="dog" side="dog" />
+            <PetColumn pet={cat} setPet={setCat} idPrefix="cat" side="cat" />
           </div>
 
           {error ? (
-            <p className="text-center text-sm font-semibold text-red-600">{error}</p>
-          ) : (
-            <p className="text-center text-xs text-brand-indigo/65">
-              پر کردن یکی از دو ستون کافی است؛ می‌توانید بعداً هم برگردید.
+            <p className="mt-1.5 shrink-0 rounded-xl bg-red-50 px-2 py-1 text-center text-xs font-bold text-red-700 sm:text-sm">
+              {error}
             </p>
-          )}
+          ) : null}
 
-          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <div className="mt-2 flex shrink-0 flex-row items-center justify-center gap-2 sm:mt-3 sm:gap-3">
             <button
               type="submit"
-              className="inline-flex min-h-12 w-full max-w-sm items-center justify-center rounded-2xl bg-brand-orange-hot px-8 text-sm font-extrabold text-white shadow-[0_16px_40px_-18px_rgba(232,93,4,0.85)] transition hover:bg-primary-600 sm:w-auto"
+              className="inline-flex h-11 flex-1 items-center justify-center rounded-2xl bg-brand-orange-hot px-4 text-sm font-extrabold text-white shadow-[0_12px_28px_-10px_rgba(232,93,4,0.9)] transition hover:bg-primary-600 sm:h-12 sm:max-w-lg sm:flex-none sm:px-10 sm:text-base md:h-13 md:text-lg"
             >
               اشتراک غذای شخصی‌سازی‌شده
             </button>
             <button
               type="button"
               onClick={onDismiss}
-              className="text-sm font-bold text-brand-indigo/70 underline decoration-brand-indigo/30 underline-offset-4 hover:text-brand-indigo"
+              className="h-11 shrink-0 rounded-2xl bg-white px-3 text-sm font-extrabold text-brand-indigo underline decoration-brand-indigo/35 underline-offset-4 hover:bg-secondary-off-white sm:h-12 sm:px-4 sm:text-base"
             >
               بعداً می‌آیم
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 }

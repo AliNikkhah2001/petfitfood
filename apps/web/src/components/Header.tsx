@@ -1,45 +1,31 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { BRAND_IMAGES } from "../lib/assets";
+import { Link, useLocation } from "react-router-dom";
+import { PRODUCTS as CATALOG, formatToman } from "../data/catalog";
+import { useCart } from "../lib/cart";
 import Logo from "./Logo";
 import PersonalizeOverlay, { PERSONALIZE_STORAGE_KEY } from "./PersonalizeOverlay";
 
 type Panel = "products" | "guide" | null;
 
-const NAV = [
-  { label: "محصولات", href: "#our-brands", panel: "products" as const },
-  { label: "مواد اولیه", href: "#ingredients" },
-  { label: "چرا پت‌فیت؟", href: "#difference" },
-  { label: "داستان ما", href: "#planet" },
-  { label: "راهنمای تغذیه", href: "#how-its-made", panel: "guide" as const },
+const NAV: { label: string; to: string; panel?: Panel }[] = [
+  { label: "فروشگاه", to: "/shop" },
+  { label: "محصولات", to: "/#our-brands", panel: "products" },
+  { label: "مواد اولیه", to: "/#ingredients" },
+  { label: "چرا پت‌فیت؟", to: "/#difference" },
+  { label: "داستان ما", to: "/#planet" },
+  { label: "راهنمای تغذیه", to: "/#how-its-made", panel: "guide" },
 ];
 
-const PRODUCTS = [
-  {
-    title: "وعده‌های تازه برای سگ‌ها",
-    copy: "ترکیب خوش‌خوراک از پروتئین و سبزیجات",
-    image: BRAND_IMAGES.dog,
-  },
-  {
-    title: "غذای روزانه‌ی گربه‌ها",
-    copy: "مواد اولیه‌ی باکیفیت برای هر روز",
-    image: BRAND_IMAGES.cat,
-  },
-  {
-    title: "تشویقی‌های خوش‌خوراک",
-    copy: "یک لقمه‌ی کوچک برای لحظه‌های خوب",
-    image: BRAND_IMAGES.treats,
-  },
-];
-
-function readUnlocked(): boolean {
-  try {
-    return Boolean(sessionStorage.getItem(PERSONALIZE_STORAGE_KEY));
-  } catch {
-    return false;
-  }
-}
+const PRODUCTS = CATALOG.slice(0, 4).map((p) => ({
+  title: p.nameFa,
+  copy: p.description,
+  image: p.image,
+  href: `/shop#${p.slug}`,
+}));
 
 export default function Header() {
+  const location = useLocation();
+  const { itemCount, totalToman } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [atBottom, setAtBottom] = useState(false);
   const [promo, setPromo] = useState(true);
@@ -48,13 +34,8 @@ export default function Header() {
   const [searchTerm, setSearchTerm] = useState("");
   const [openPanel, setOpenPanel] = useState<Panel>(null);
   const [unlocked, setUnlocked] = useState(false);
-  const [gateOpen, setGateOpen] = useState(false);
-
-  useEffect(() => {
-    const done = readUnlocked();
-    setUnlocked(done);
-    setGateOpen(!done);
-  }, []);
+  // Always show personalize gate on every page load / refresh
+  const [gateOpen, setGateOpen] = useState(true);
 
   useEffect(() => {
     const onScroll = () => {
@@ -117,14 +98,6 @@ export default function Header() {
   };
 
   const dismissGate = useCallback(() => {
-    try {
-      sessionStorage.setItem(
-        PERSONALIZE_STORAGE_KEY,
-        JSON.stringify({ skipped: true, at: Date.now() }),
-      );
-    } catch {
-      /* ignore quota */
-    }
     setUnlocked(true);
     setGateOpen(false);
   }, []);
@@ -151,11 +124,12 @@ export default function Header() {
 
   const submitSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const target = /مواد|ترکیب|مرغ|هویج|اسفناج/.test(searchTerm)
-      ? "#ingredients"
-      : "#our-brands";
     closeAll();
-    window.location.hash = target;
+    if (/مواد|ترکیب|مرغ|هویج|اسفناج/.test(searchTerm)) {
+      window.location.assign("/#ingredients");
+      return;
+    }
+    window.location.assign("/shop");
   };
 
   const menuTop = promo ? 108 : 72;
@@ -195,8 +169,8 @@ export default function Header() {
           }`}
         >
           <div className="o-container flex min-h-[72px] items-center justify-between gap-3 py-2">
-            <a
-              href="#top"
+            <Link
+              to="/"
               aria-label="صفحه‌ی نخست پت‌فیت"
               className="flex shrink-0 items-center transition-all duration-300"
               onClick={closeAll}
@@ -206,7 +180,7 @@ export default function Header() {
               ) : (
                 <Logo className="h-20 w-auto md:h-24 lg:h-[7.5rem]" />
               )}
-            </a>
+            </Link>
 
             <nav
               className="hidden items-center gap-1 lg:flex"
@@ -219,13 +193,17 @@ export default function Header() {
                   className="relative"
                   onMouseEnter={() => setOpenPanel(item.panel ?? null)}
                 >
-                  <a
-                    href={item.href}
+                  <Link
+                    to={item.to}
                     onClick={closeAll}
-                    className="flex items-center gap-1 rounded-full px-3 py-2 text-[13px] font-semibold text-neutral-700 transition-colors hover:bg-primary-100 hover:text-brand-indigo"
+                    className={`flex items-center gap-1 rounded-full px-3 py-2 text-[13px] font-semibold transition-colors hover:bg-primary-100 hover:text-brand-indigo ${
+                      location.pathname === item.to
+                        ? "bg-primary-100 text-brand-indigo"
+                        : "text-neutral-700"
+                    }`}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </div>
               ))}
             </nav>
@@ -242,13 +220,39 @@ export default function Header() {
                   <path d="m13 13 4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                 </svg>
               </button>
-              <button
-                type="button"
-                onClick={() => setGateOpen(true)}
+              <Link
+                to="/checkout"
+                onClick={closeAll}
+                aria-label={`سبد خرید، ${itemCount} قلم`}
+                className="relative grid h-9 min-w-9 place-items-center rounded-full px-2 text-neutral-700 transition-colors hover:bg-neutral-100"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path
+                    d="M6 6h15l-1.5 9h-12z"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                  <path d="M6 6 5 3H2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  <circle cx="9" cy="20" r="1.25" fill="currentColor" />
+                  <circle cx="17" cy="20" r="1.25" fill="currentColor" />
+                </svg>
+                {itemCount > 0 ? (
+                  <span className="absolute -top-0.5 -start-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-brand-orange-hot px-1 text-[9px] font-bold text-white">
+                    {itemCount}
+                  </span>
+                ) : null}
+                <span className="sr-only">
+                  {itemCount > 0 ? formatToman(totalToman) : "سبد خالی"}
+                </span>
+              </Link>
+              <Link
+                to="/shop"
+                onClick={closeAll}
                 className="hidden items-center gap-1.5 rounded-full bg-brand-orange-hot px-5 py-2.5 text-p-xs font-semibold text-white sm:inline-flex"
               >
-                شروع اشتراک
-              </button>
+                خرید آنلاین
+              </Link>
               <button
                 type="button"
                 onClick={() => setMobileOpen((value) => !value)}
@@ -304,9 +308,9 @@ export default function Header() {
                 {openPanel === "products" ? (
                   <div className="grid gap-2 sm:grid-cols-3">
                     {PRODUCTS.map((item) => (
-                      <a
+                      <Link
                         key={item.title}
-                        href="#our-brands"
+                        to={item.href}
                         onClick={closeAll}
                         className="flex items-center gap-3 rounded-2xl p-3 hover:bg-secondary-off-white"
                       >
@@ -317,13 +321,13 @@ export default function Header() {
                           </span>
                           <span className="mt-0.5 block text-[11px] text-neutral-500">{item.copy}</span>
                         </span>
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 ) : (
-                  <a href="#how-its-made" onClick={closeAll} className="a-button">
+                  <Link to="/#how-its-made" onClick={closeAll} className="a-button">
                     رفتن به راهنما
-                  </a>
+                  </Link>
                 )}
               </div>
             </div>
@@ -340,25 +344,18 @@ export default function Header() {
         >
           <nav className="flex flex-col px-5 py-4" aria-label="فهرست موبایل">
             {NAV.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                to={item.to}
                 onClick={closeAll}
                 className="border-b border-neutral-100 py-4 text-base font-semibold text-neutral-700"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
-            <button
-              type="button"
-              onClick={() => {
-                closeAll();
-                setGateOpen(true);
-              }}
-              className="a-button mt-6"
-            >
-              شروع اشتراک
-            </button>
+            <Link to="/shop" onClick={closeAll} className="a-button mt-6 text-center">
+              خرید آنلاین
+            </Link>
           </nav>
         </div>
       </header>
