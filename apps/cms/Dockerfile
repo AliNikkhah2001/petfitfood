@@ -12,7 +12,7 @@ WORKDIR /app
 RUN dnf install -y -q gcc libpq-devel curl && dnf clean all
 
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt gunicorn whitenoise
+RUN pip install --no-cache-dir --default-timeout=120 --retries 10 -r requirements.txt gunicorn whitenoise
 
 COPY . /app
 
