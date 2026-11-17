@@ -1,6 +1,8 @@
 # Quay mirror (Docker Hub is not reachable from all hosts)
 FROM quay.io/fedora/python-312:latest
 
+USER root
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=petfit_cms.settings.production
