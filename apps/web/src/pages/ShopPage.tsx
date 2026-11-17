@@ -1,14 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import CartPanel from "../components/CartPanel";
-import {
-  BEEF_PRODUCTS,
-  CHICKEN_PRODUCTS,
-  PRODUCTS,
-  formatToman,
-  type Product,
-} from "../data/catalog";
+import { PRODUCTS, formatToman, type Product } from "../data/catalog";
+import { getProducts } from "../lib/api";
 import { useCart } from "../lib/cart";
+import { mediaUrl } from "../lib/media";
 
 type GroupFilter = "all" | "chicken" | "beef";
 
@@ -17,11 +13,12 @@ function ShopCard({ product }: { product: Product }) {
   const defaultGrams = product.prices[0]?.grams ?? 400;
   const [grams, setGrams] = useState(defaultGrams);
   const price = product.prices.find((p) => p.grams === grams);
+  const imageSrc = mediaUrl(product.image) || product.image;
 
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white">
       <Link to={`/product/${product.slug}`} className="relative aspect-[5/4] bg-secondary-light-beige">
-        <img src={product.image} alt={product.nameFa} className="h-full w-full object-cover" />
+        <img src={imageSrc} alt={product.nameFa} className="h-full w-full object-cover" />
         <span className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-extrabold text-brand-indigo">
           {product.badge}
         </span>
@@ -65,12 +62,17 @@ function ShopCard({ product }: { product: Product }) {
 
 export default function ShopPage() {
   const [group, setGroup] = useState<GroupFilter>("all");
+  const [catalog, setCatalog] = useState<Product[]>(PRODUCTS);
   const { itemCount } = useCart();
+
+  useEffect(() => {
+    void getProducts().then(setCatalog);
+  }, []);
+
   const items = useMemo(() => {
-    if (group === "chicken") return CHICKEN_PRODUCTS;
-    if (group === "beef") return BEEF_PRODUCTS;
-    return PRODUCTS;
-  }, [group]);
+    if (group === "all") return catalog;
+    return catalog.filter((p) => p.group === group);
+  }, [catalog, group]);
 
   return (
     <div className="min-h-screen bg-secondary-off-white pb-16 pt-6">
@@ -80,7 +82,7 @@ export default function ShopPage() {
             <p className="eyebrow">فروشگاه پت‌فیت</p>
             <h1 className="mt-2 text-h-4xl text-brand-indigo md:text-h-5xl">منوی خرید</h1>
             <p className="mt-2 max-w-xl text-sm leading-7 text-neutral-600">
-              قیمت‌ها از منوی رسمی اینستاگرام — وزن را انتخاب کنید و به سبد اضافه کنید.
+              قیمت‌ها از منوی رسمی — از پنل Wagtail قابل ویرایش است.
             </p>
           </div>
           <p className="rounded-full bg-white px-4 py-2 text-sm font-bold text-brand-indigo shadow-sm">

@@ -61,6 +61,7 @@ export type ApiPage = {
   slug: string;
   title: string;
   body?: string;
+  page_kind?: string;
 };
 
 export type ApiPost = {
@@ -70,6 +71,7 @@ export type ApiPost = {
   excerpt?: string;
   body?: string;
   published_at?: string;
+  cover?: string;
 };
 
 export type CreateOrderLine = {

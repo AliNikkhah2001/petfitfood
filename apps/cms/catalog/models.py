@@ -2,9 +2,19 @@ from django.db import models
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.api import APIField
 from wagtail.fields import RichTextField
+from wagtail.images import get_image_model_string
 from wagtail.models import Orderable, Page
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+
+
+def _image_url(image) -> str:
+    if not image:
+        return ""
+    try:
+        return image.file.url
+    except Exception:
+        return ""
 
 
 class Product(ClusterableModel):
@@ -23,7 +33,15 @@ class Product(ClusterableModel):
     name_fa = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     ingredients = models.JSONField(default=list, blank=True)
+    # Legacy path string (fallback) + Wagtail image (preferred in admin)
     image = models.CharField(max_length=500, blank=True)
+    photo = models.ForeignKey(
+        get_image_model_string(),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
     badge = models.CharField(max_length=64, blank=True)
     is_active = models.BooleanField(default=True)
     sort_order = models.PositiveIntegerField(default=0)
@@ -35,6 +53,7 @@ class Product(ClusterableModel):
         FieldPanel("name_fa"),
         FieldPanel("description"),
         FieldPanel("ingredients"),
+        FieldPanel("photo"),
         FieldPanel("image"),
         FieldPanel("badge"),
         FieldPanel("is_active"),
@@ -48,6 +67,9 @@ class Product(ClusterableModel):
     def __str__(self) -> str:
         return self.name_fa
 
+    def resolved_image_url(self) -> str:
+        return _image_url(self.photo) or self.image
+
     def to_api_dict(self) -> dict:
         return {
             "id": self.external_id,
@@ -59,7 +81,7 @@ class Product(ClusterableModel):
             "prices": [
                 {"grams": p.grams, "priceToman": p.price_toman} for p in self.prices.all()
             ],
-            "image": self.image,
+            "image": self.resolved_image_url(),
             "badge": self.badge,
         }
 
@@ -115,11 +137,19 @@ class MagazineIndexPage(Page):
 class MagazineArticlePage(Page):
     excerpt = models.TextField(blank=True)
     cover = models.CharField(max_length=500, blank=True)
+    cover_image = models.ForeignKey(
+        get_image_model_string(),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
     body = RichTextField(blank=True)
     published_at = models.CharField(max_length=32, blank=True)
 
     content_panels = Page.content_panels + [
         FieldPanel("excerpt"),
+        FieldPanel("cover_image"),
         FieldPanel("cover"),
         FieldPanel("published_at"),
         FieldPanel("body"),
@@ -133,3 +163,6 @@ class MagazineArticlePage(Page):
         APIField("published_at"),
         APIField("body"),
     ]
+
+    def resolved_cover_url(self) -> str:
+        return _image_url(self.cover_image) or self.cover

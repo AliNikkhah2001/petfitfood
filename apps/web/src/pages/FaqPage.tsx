@@ -1,17 +1,15 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import CmsPageView from "../components/CmsPageView";
 import { FAQ_ITEMS } from "../data/faq";
+import { useState } from "react";
 
-export default function FaqPage() {
+function StaticFaq() {
   const [openId, setOpenId] = useState<string | null>(FAQ_ITEMS[0]?.id ?? null);
-
   return (
     <div className="min-h-screen bg-secondary-off-white pb-16 pt-6">
       <div className="o-container mx-auto max-w-2xl">
         <p className="eyebrow">راهنما</p>
         <h1 className="mt-2 text-h-4xl text-brand-indigo">پرسش‌های متداول</h1>
-        <p className="mt-2 text-sm text-neutral-600">پاسخ کوتاه به رایج‌ترین سوالات درباره سفارش و نگهداری.</p>
-
         <ul className="mt-8 space-y-3">
           {FAQ_ITEMS.map((item) => {
             const open = openId === item.id;
@@ -34,14 +32,17 @@ export default function FaqPage() {
             );
           })}
         </ul>
-
         <p className="mt-8 text-sm text-neutral-600">
           سوال دیگری دارید؟{" "}
           <Link to="/contact" className="font-bold text-brand-orange-hot underline">
-            با ما تماس بگیرید
+            تماس با ما
           </Link>
         </p>
       </div>
     </div>
   );
+}
+
+export default function FaqPage() {
+  return <CmsPageView slug="faq" fallback={<StaticFaq />} />;
 }

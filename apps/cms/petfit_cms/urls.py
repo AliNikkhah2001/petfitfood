@@ -17,13 +17,21 @@ urlpatterns = [
 ]
 
 
-if settings.DEBUG:
-    from django.conf.urls.static import static
-    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import re_path
+from django.views.static import serve as media_serve
 
-    # Serve static and media files from development server
+# django.conf.urls.static only wires media when DEBUG=True; always serve
+# /media/ here so product/cover URLs work behind gunicorn on a small VPS.
+urlpatterns += [
+    re_path(
+        r"^media/(?P<path>.*)$",
+        media_serve,
+        {"document_root": settings.MEDIA_ROOT},
+    ),
+]
+if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns = urlpatterns + [
     # For anything not caught by a more specific rule above, hand over to

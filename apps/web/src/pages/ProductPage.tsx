@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { formatToman, type Product } from "../data/catalog";
 import { getProduct } from "../lib/api";
 import { useCart } from "../lib/cart";
+import { mediaUrl } from "../lib/media";
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -46,6 +47,7 @@ export default function ProductPage() {
   }
 
   const price = product.prices.find((p) => p.grams === grams);
+  const imageSrc = mediaUrl(product.image) || product.image;
 
   return (
     <div className="min-h-screen bg-secondary-off-white pb-16 pt-6">
@@ -61,10 +63,10 @@ export default function ProductPage() {
         <div className="mt-6 grid gap-8 lg:grid-cols-2">
           <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
             <div className="aspect-square bg-secondary-light-beige">
-              <img src={product.image} alt={product.nameFa} className="h-full w-full object-cover" />
+              <img src={imageSrc} alt={product.nameFa} className="h-full w-full object-cover" />
             </div>
             <div className="flex gap-2 overflow-x-auto p-4">
-              <img src={product.image} alt="" className="h-16 w-16 shrink-0 rounded-xl border-2 border-brand-indigo object-cover" />
+              <img src={imageSrc} alt="" className="h-16 w-16 shrink-0 rounded-xl border-2 border-brand-indigo object-cover" />
             </div>
           </div>
 

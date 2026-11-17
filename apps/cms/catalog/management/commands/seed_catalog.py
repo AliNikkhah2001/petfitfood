@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from wagtail.models import Page, Site
 
+from catalog.media_seed import get_or_create_wagtail_image
 from catalog.models import (
     ContentPage,
     MagazineArticlePage,
@@ -12,6 +13,7 @@ from catalog.models import (
 from catalog.seed_data import CONTENT_PAGES, MAGAZINE, PRODUCTS
 from commerce.models import Customer, Ingredient, RecipeLine
 from commerce.seed_data import DEFAULT_SHARE, INGREDIENTS, LABEL_TO_SLUG
+from wagtail.images.models import Image
 
 
 class Command(BaseCommand):
@@ -32,7 +34,9 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Catalog seed complete"))
 
     def _seed_products(self):
+        linked = 0
         for index, data in enumerate(PRODUCTS):
+            photo = get_or_create_wagtail_image(data["image"], title=data["name_fa"])
             product, _ = Product.objects.update_or_create(
                 external_id=data["external_id"],
                 defaults={
@@ -42,15 +46,21 @@ class Command(BaseCommand):
                     "description": data["description"],
                     "ingredients": data["ingredients"],
                     "image": data["image"],
+                    "photo": photo,
                     "badge": data["badge"],
                     "is_active": True,
                     "sort_order": index,
                 },
             )
+            if photo:
+                linked += 1
             product.prices.all().delete()
             for grams, price in data["prices"]:
                 ProductPrice.objects.create(product=product, grams=grams, price_toman=price)
-        self.stdout.write(f"Products: {Product.objects.count()}")
+        self.stdout.write(
+            f"Products: {Product.objects.count()} · Wagtail photos linked: {linked}"
+        )
+        self.stdout.write(f"Wagtail images library: {Image.objects.count()}")
 
     def _seed_magazine(self, home: Page):
         existing = home.get_children().type(MagazineIndexPage).first()
@@ -66,12 +76,14 @@ class Command(BaseCommand):
             index.save_revision().publish()
 
         for data in MAGAZINE:
+            cover_image = get_or_create_wagtail_image(data["cover"], title=data["title"])
             child = index.get_children().filter(slug=data["slug"]).first()
             if child:
                 article = child.specific
                 article.title = data["title"]
                 article.excerpt = data["excerpt"]
                 article.cover = data["cover"]
+                article.cover_image = cover_image
                 article.published_at = data["published_at"]
                 article.body = data["body"]
                 article.save_revision().publish()
@@ -81,6 +93,7 @@ class Command(BaseCommand):
                     slug=data["slug"],
                     excerpt=data["excerpt"],
                     cover=data["cover"],
+                    cover_image=cover_image,
                     published_at=data["published_at"],
                     body=data["body"],
                 )

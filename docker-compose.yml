@@ -38,12 +38,14 @@ services:
       PETFIT_SEED_ON_BOOT: "1"
       SESSION_COOKIE_SECURE: "0"
       CSRF_COOKIE_SECURE: "0"
+      SEED_MEDIA_ROOT: /seed_media
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - petfit_media:/app/media
       - petfit_data:/app/data
+      - ./apps/web/public:/seed_media:ro
 
 volumes:
   petfit_pg:

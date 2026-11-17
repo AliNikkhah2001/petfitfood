@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import CmsPageView from "../components/CmsPageView";
 import { asset } from "../lib/asset";
 
-export default function AboutPage() {
+function StaticAbout() {
   return (
     <div className="min-h-screen bg-secondary-off-white pb-16 pt-6">
       <div className="o-container mx-auto max-w-3xl">
@@ -15,7 +16,6 @@ export default function AboutPage() {
           تیم پت‌فیت مواد اولیه را با دقت انتخاب می‌کند، وعده‌ها را در مقیاس کنترل‌شده آماده می‌کند و با بسته‌بندی
           مناسب به دست شما می‌رساند. هدف ما ساده است: یک کاسهٔ تازه‌تر، هر روز.
         </p>
-
         <div className="mt-10 overflow-hidden rounded-2xl border border-neutral-200">
           <img
             src={asset("brand/petfit-catdog-friends.jpg")}
@@ -23,24 +23,14 @@ export default function AboutPage() {
             className="max-h-72 w-full object-cover"
           />
         </div>
-
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
-          {[
-            ["۱۲+", "فرمول وعده"],
-            ["Fresh Pack", "بسته‌بندی"],
-            ["تهران", "ارسال هماهنگ"],
-          ].map(([stat, label]) => (
-            <div key={label} className="rounded-2xl bg-white p-5 text-center ring-1 ring-neutral-200">
-              <p className="text-2xl font-extrabold text-brand-orange-hot">{stat}</p>
-              <p className="mt-1 text-xs font-bold text-brand-indigo">{label}</p>
-            </div>
-          ))}
-        </div>
-
         <Link to="/shop" className="mt-10 inline-flex a-button">
           دیدن منوی خرید
         </Link>
       </div>
     </div>
   );
+}
+
+export default function AboutPage() {
+  return <CmsPageView slug="about" fallback={<StaticAbout />} />;
 }

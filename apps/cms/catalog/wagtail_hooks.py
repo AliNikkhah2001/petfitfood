@@ -10,7 +10,7 @@ class ProductViewSet(SnippetViewSet):
     icon = "tag"
     menu_label = "محصولات"
     menu_name = "products"
-    list_display = ("name_fa", "group", "slug", "is_active")
+    list_display = ("name_fa", "group", "slug", "photo", "is_active")
     search_fields = ("name_fa", "slug", "external_id")
 
 

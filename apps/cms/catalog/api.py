@@ -50,7 +50,7 @@ def post_list(_request):
                 "excerpt": page.excerpt,
                 "body": str(page.body),
                 "published_at": page.published_at,
-                "cover": page.cover,
+                "cover": page.resolved_cover_url(),
             }
         )
     return JsonResponse(posts, safe=False)
