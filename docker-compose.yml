@@ -1,12 +1,12 @@
 services:
   db:
-    image: postgres:16-alpine
+    image: quay.io/sclorg/postgresql-16-c9s:latest
     environment:
-      POSTGRES_DB: petfit
-      POSTGRES_USER: petfit
-      POSTGRES_PASSWORD: petfit
+      POSTGRESQL_DATABASE: petfit
+      POSTGRESQL_USER: petfit
+      POSTGRESQL_PASSWORD: petfit
     volumes:
-      - petfit_pg:/var/lib/postgresql/data
+      - petfit_pg:/var/lib/pgsql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U petfit -d petfit"]
       interval: 5s

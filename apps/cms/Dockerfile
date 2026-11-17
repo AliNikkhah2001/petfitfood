@@ -1,4 +1,5 @@
-FROM python:3.12-slim
+# Quay mirror (Docker Hub is not reachable from all hosts)
+FROM quay.io/fedora/python-312:latest
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -6,9 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential libpq-dev curl \
-    && rm -rf /var/lib/apt/lists/*
+RUN dnf install -y -q gcc libpq-devel curl && dnf clean all
 
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt gunicorn whitenoise
